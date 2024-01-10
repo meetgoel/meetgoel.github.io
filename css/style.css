@@ -1,0 +1,790 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+.active {
+    color: blue !important;
+}
+
+.add-shadow {
+    transition: all 0.5s;
+    box-shadow: -21.213px 21.213px 30px 0px rgba(158, 158, 158, 0.3);
+}
+
+.nav-link {
+    color: black;
+    font-size: 12px;
+}
+
+.sticky-top {
+    top: 0;
+    position: sticky;
+    z-index: 1000;
+    background-color: white;
+}
+
+nav {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.bottom-up {
+    position: fixed;
+    top: 500px;
+    left: 95%;
+    z-index: 1001;
+}
+
+.bottom-up i {
+    color: #777777;
+}
+
+/* Hero Section Starts here */
+
+.hero-article {
+    background-color: #F9F9FF;
+}
+
+.hero {
+    display: flex;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.hero-left h1 {
+    font-size: 60px;
+    font-weight: bold;
+}
+
+.hero-left p {
+    font-size: 14px;
+    color: #777777;
+}
+
+.hero-left a button {
+    align-items: center;
+    background: #FFFFFF;
+    border: 0 solid #E2E8F0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-sizing: border-box;
+    color: #1A202C;
+    display: inline-flex;
+    font-weight: 700;
+    padding: 12px 22px;
+    text-decoration: none;
+    border-radius: 8px;
+    user-select: none;
+}
+
+.hero-left a button:hover {
+    background-color: rgb(19, 18, 18);
+    color: white;
+    transition: all ease 0.2s;
+}
+
+/* hero ends here */
+
+/* about starts here  */
+.about {
+    display: flex;
+    align-items: center;
+    padding: 120px 0;
+}
+
+.about-left img {
+    width: 550px;
+}
+
+.about-right h6 {
+    font-weight: 400;
+    font-size: 14px;
+}
+
+.about-right h1 {
+    font-size: 36px;
+    font-weight: bold;
+}
+
+.about-right p {
+    font-size: 14px;
+    color: #777777;
+    text-align: justify;
+}
+
+.about-right button {
+    align-items: center;
+    background: #FFFFFF;
+    border: 0 solid #E2E8F0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-sizing: border-box;
+    color: #1A202C;
+    display: inline-flex;
+    font-weight: 700;
+    padding: 12px 22px;
+    text-decoration: none;
+    border-radius: 8px;
+    user-select: none;
+}
+
+.about-right button:hover {
+    background-color: rgb(19, 18, 18);
+    color: white;
+    transition: all ease 0.2s;
+}
+
+/* about ends here */
+
+/* service starts here */
+
+.service h1 {
+    font-size: 36px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.service p {
+    font-size: 14px;
+    color: #777777;
+    text-align: center;
+    margin: 10px 0;
+}
+
+.boxes {
+    margin: 50px;
+}
+
+.boxes a {
+    text-decoration: none;
+}
+
+.boxes .box h4 {
+    color: black;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.boxes .box p {
+    font-size: 14px;
+    font-weight: 300;
+    text-align: center;
+}
+
+.boxes .box span {
+    font-size: 36px;
+    margin: 30px 45%;
+}
+
+.box:hover h4,
+.box:hover span i {
+    transition: all ease 0.5s;
+    color: blue;
+    cursor: pointer;
+}
+
+/* service ends here */
+
+/* count starts here */
+.count {
+    justify-content: center;
+    padding: 100px 0;
+    background-color: #7F9EEF;
+}
+
+.count h2 {
+    font-weight: 700;
+    font-size: 36px;
+}
+
+/* count ends here */
+
+/* project starts here */
+.project h1 {
+    text-align: center;
+    font-size: 36px;
+    font-weight: 700;
+    margin-top: 100px;
+}
+
+.project p {
+    font-size: 14px;
+    color: #777777;
+    text-align: center;
+    margin: 10px 0;
+}
+
+.project ul {
+    justify-content: center;
+}
+
+.project ul li {
+    list-style: none;
+    margin: 50px 10px 50px 10px;
+}
+
+.project ul li>p {
+    color: black;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.project ul li p:hover {
+    color: blue;
+    cursor: pointer;
+    transition: all ease 0.5s;
+}
+
+.gallery {
+    margin: 30px 0;
+}
+
+.gallery h4 {
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+    margin: 15px 0 0 0;
+}
+
+.gallery div div {
+    text-align: center;
+    color: #777777;
+    font-size: 14px;
+}
+
+.gallery img {
+    width: 350px;
+    height: 250px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+/* project ends here */
+
+/* feedback starts here */
+.feedback-article {
+    background-color: #F9F9FF;
+    height: 100vh;
+}
+
+.feedback h1 {
+    padding-top: 100px;
+    text-align: center;
+    font-size: 36px;
+    font-weight: 700;
+    margin-top: 50px;
+}
+
+.feedback p {
+    text-align: center;
+    margin-bottom: 80px;
+    font-size: 14px;
+    color: #777777;
+}
+
+.feedback img {
+    width: 100px;
+    height: 100px;
+}
+
+.carousel {
+    width: 600px;
+    margin: 0 auto;
+    padding: 50px 10px;
+    background-color: white;
+}
+
+.testimonal {
+    width: 100%;
+}
+
+.testimonal-img {
+    width: 20%;
+    float: left;
+}
+
+.testimonal-desc {
+    width: 80%;
+    float: left;
+}
+
+.testimonal-desc p {
+    color: #777777;
+    font-size: 14px;
+    font-weight: 100;
+}
+
+.testimonal-desc h4 {
+    font-size: 18px;
+    font-weight: 700;
+    color: black;
+
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #999;
+    text-shadow: none;
+    top: 4px;
+}
+
+.carousel-control-prev i,
+.carousel-control-next i {
+    font-size: 20px;
+    margin-right: 2px;
+}
+
+.carousel-control-prev {
+    left: auto;
+    right: 40px;
+}
+
+.carousel-control-next i {
+    margin-right: -2px;
+}
+
+.carousel .carousel-indicators {
+    list-style: none;
+    bottom: 15px;
+}
+
+.carousel-indicators li,
+.carousel-indicators li.active {
+    width: 11px;
+    height: 11px;
+    margin: 1px 5px;
+    border-radius: 50%;
+}
+
+.carousel-indicators li {
+    background: #e2e2e2;
+    border: none;
+}
+
+.carousel-indicators li.active {
+    background: #888;
+}
+
+/* feedback ends here */
+
+/* blog starts here */
+.blog-article {
+    clear: both;
+}
+
+.blog h1 {
+    margin: 100px 0 10px 0;
+    text-align: center;
+    font-weight: 700;
+    font-size: 36px;
+}
+
+.blog>p {
+    color: #777777;
+    text-align: center;
+    font-size: 14px;
+    padding: 20px 0 70px 0;
+}
+
+.blog-images a h4,
+.blog-images a {
+    text-decoration: none;
+    color: black;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 20px 0 10px 0;
+}
+
+.blog-images p {
+    font-size: 14px;
+    font-weight: 400;
+    color: #777777;
+    padding-bottom: 100px;
+}
+
+.blog-images .img-hover-zoom {
+    height: 200px;
+    /* Modify this according to your need */
+    overflow: hidden;
+    /* Removing this will break the effects */
+}
+
+.blog-images .img-hover-zoom img {
+    transition: transform .5s ease;
+}
+
+.blog-images div:hover img {
+    transform: scale(1.2);
+}
+
+.blog-images div:hover .blog-title {
+    color: blue;
+}
+
+/* blog ends here */
+/* footer starts here */
+.footer-article {
+    background-color: #04091E;
+    color: white;
+}
+
+footer h4 {
+    padding: 150px 0 20px 0;
+    font-size: 18px;
+}
+
+footer p {
+    font-size: 14px;
+    color: #777777;
+}
+
+footer .copyright {
+    padding-bottom: 100px;
+}
+
+footer form input[type="text"] {
+    width: 80%;
+    height: 50px;
+    padding-left: 10px;
+    border: none;
+    font-size: 14px;
+}
+
+.footer form input[type="text"] {
+    border: 2px solid #862d59;
+}
+
+footer form input[type="submit"] {
+    width: 50px;
+    height: 50px;
+    margin: 0 -25px;
+    background-color: #7F9EEF;
+    border: none;
+    color: white;
+    font-size: 14px;
+}
+
+footer i {
+    padding: 0 5px;
+    font-size: 20px;
+    cursor: pointer;
+    color: white;
+}
+
+.icon-facebook:hover {
+    color: #0862F7;
+}
+
+.icon-instagram:hover {
+    color: #F91ABC;
+}
+
+.icon-twitter:hover {
+    color: #1DA1F2;
+}
+
+.icon-github:hover {
+    color: lime;
+}
+
+.icon-linkedin:hover {
+    color: #0077B0;
+}
+
+
+/* pagination starts here */
+.pagination-article {
+    background-color: #7B9DFE;
+    color: white;
+    text-align: center;
+    padding: 90px 0;
+}
+
+.pagination-article .container h1 {
+    font-weight: bolder;
+    font-size: 48px;
+}
+
+.pagination-article .container a {
+    color: white;
+    text-decoration: none;
+    padding: 0 10px;
+    font-size: 14px;
+}
+
+.pagination-article .container a:hover {
+    color: black;
+    transition: all ease 0.3s;
+}
+
+/* pagination ends here */
+
+.about p {
+    font-size: 14px;
+    color: #777777;
+}
+
+.tools h4 {
+    font-size: 18px;
+    font-weight: 700;
+    padding: 50px 0;
+
+}
+
+.tools p {
+    text-align: right;
+}
+
+.tools form input {
+    width: 100%;
+}
+
+.tools .progress {
+    margin: 0 0 20px 0;
+    height: 12px;
+}
+
+.qualification h1 {
+    font-size: 36px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.qualification p {
+    text-align: center;
+    font-size: 14px;
+    color: #777777;
+}
+
+.qualification-box h4 {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.qualification-box span {
+    color: black;
+    font-weight: 500;
+}
+
+.qualification-box p {
+    font-size: 14px;
+    color: #777777;
+}
+
+.qualification-box {
+    /* border: 1px solid black; */
+    box-shadow: 0px 10px 27px 3px rgba(204, 204, 204, 0.8);
+    text-align: center;
+    padding: 20px;
+}
+
+.qualification-boxes {
+    padding: 50px 0;
+}
+
+.qualification-box:hover {
+    transform: scale(1.1);
+    transition: all ease 0.5s;
+    cursor: pointer;
+}
+
+.contact-article .contact {
+    margin: 50px 0;
+}
+
+.contact form input[type="text"] {
+    width: 100%;
+    height: 50px;
+    margin-bottom: 30px;
+    font-size: 12px;
+    padding: 0 10px;
+}
+
+.contact form textarea {
+    width: 100%;
+    height: 210px;
+    padding: 10px 10px;
+    font-size: 12px;
+    color: #777777;
+}
+
+.contact h5 {
+    font-size: 16px;
+    font-weight: normal;
+}
+
+.contact p {
+    font-size: 14px;
+    color: #777777;
+}
+
+.contact i {
+    font-size: 24px;
+    padding: 10px;
+
+}
+
+.contact-article {
+    padding: 50px 0;
+}
+
+.contact input[type="submit"] {
+    padding: 10px 20px;
+    font-size: 14px;
+    color: white;
+    background: #8490ff;
+    border: none;
+    font-weight: 400;
+}
+
+.contact input[type="submit"]:hover {
+    background-color: white;
+    color: #8490ff;
+    border: 1px solid #8490ff;
+    transition: all ease 0.2s;
+}
+
+.contact form {
+    margin: 100px 0;
+}
+
+.contact form .contact-desc {
+    margin: 0 0 10px 0;
+}
+
+.contact-desc i:hover {
+    color: #1DA1F2;
+}
+
+.certifications h4 {
+    font-size: 14px;
+}
+
+.certifications h1 {
+    text-align: center;
+    font-size: 36px;
+    font-weight: 700;
+    margin-top: 100px;
+}
+
+.certifications p {
+    font-size: 14px;
+    color: #777777;
+    text-align: center;
+    margin: 10px 0;
+}
+
+.certifications .gallery img:hover {
+    transform: scale(1.1);
+    transition: all ease-in-out 0.3s;
+}
+
+.nav-logo {
+    display: none;
+}
+
+@media only screen and (max-width: 768px) {
+    .navbar {
+        display: none;
+    }
+
+    .sticky-top {
+        position: relative;
+    }
+
+    .nav-logo {
+        display: block;
+        margin: 15px 20px;
+    }
+
+    .navbar>a {
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    nav ul li {
+        width: 100%;
+        text-align: center;
+        margin: 0 50px;
+        border-bottom: 1px solid #777777;
+    }
+
+    .hero-article {
+        text-align: center;
+    }
+
+    .about-article {
+        text-align: center;
+    }
+
+    .about-article img {
+        margin: 50px 0;
+    }
+
+    .project-article {
+        text-align: center;
+    }
+
+    .project-article .gallery img {
+        margin: 50px 0 10px 0;
+    }
+
+    .carousel {
+        width: 70%;
+    }
+
+    .feedback-article {
+        height: 600px;
+    }
+
+    .blog-article {
+        text-align: center;
+    }
+
+    .footer-article {
+        text-align: center;
+        padding: 50px 0;
+    }
+
+    .footer-article form input[type="text"] {
+        text-align: left !important;
+    }
+
+    .footer-article h4 {
+        padding: 100px 0 0 0;
+    }
+
+    .footer-article .copyright {
+        padding: 0;
+    }
+
+    .qualification-box {
+        margin: 25px 0;
+    }
+
+    .certifications-article {
+        text-align: center;
+    }
+
+    .certifications h4 {
+        margin: 30px 0 0 0;
+    }
+
+    .certifications .gallery div {
+        margin: 0 0 30px 0;
+    }
+
+    .contact-article {
+        text-align: center;
+    }
+
+    .contact-article .contact form input[type="submit"] {
+        margin: 10px 0;
+    }
+}
