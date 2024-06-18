@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="assets/img/logo.jpeg" type="image/x-icon">
+    <title>Jarvis</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!-- Bootstrap Icons CSS -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Particle JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"
+        type="text/javascript"></script>
+
+    <!-- Texllate CSS -->
+    <link rel="stylesheet" href="texllate/animate.css">
+
+
+</head>
+
+<body>
+    <div class="container">
+        <section id="Oval" class="mb-4">
+            <div class="row">
+                <div class="col-md-3">
+                    <br>
+                    <img class="img-fluid mt-5" src="assets/img/ims-logo.png" alt="" style="width: 250px; height: 120px;">
+                    <h3 class="text-light text  mt-5">IMS GHAZIABAD UCC</h3>
+                    <h3 class="text-light text  mt-3">BCA MAJOR PROJECT</h3>
+                    <h6 class="text-light text  mt-3">Made by: Mr. Meet Goel</h6>
+                    <h6 class="text-light text  mt-3">Project Guide: Dr. Nikita Joshi Mishra</h6>
+                    <h6 class="text-light text  mt-3">Batch: (2021-2024)</h6>
+                    <br>
+                    <h6 class="text-light text mt-3">Date: <span id="currentDate"></span></h6>
+                    
+                    <h6 class="text-light text  mt-3">User Authentication: Successful</h6>
+                    <h3 class="text-light text  mt-5">Features</h3>
+                    <h6 class="text-light text  mt-3">1. AI IMAGE GENERATION</h6>
+                    <h6 class="text-light text  mt-3">2. AI TEXT GENERATION AND RESPONSES</h6>
+                    <h6 class="text-light text  mt-3">3. WHATSAPP AUTOMATION</h6>
+                    <h6 class="text-light text  mt-3">4. SYSTEM OPERATIONS</h6>
+                    <h6 class="text-light text  mt-3">5. MANUAL CHAT INTERFACE</h6>
+                    <h6 class="text-light text  mt-3">6. CHAT HISTORY</h6>
+                    <h6 class="text-light text  mt-3">7. FACE RECOGNITION</h6>
+                    <h6 class="text-light text  mt-3">8. CLAP DETECTION</h6>
+                    
+                    
+
+
+
+                    
+
+
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
+                        <canvas id="canvasOne" width="700px" height="420px" style="position: absolute;"></canvas>
+
+                        <div id="JarvisHud">
+                            <div class="square">
+                                <span class="circle"></span>
+                                <span class="circle"></span>
+                                <span class="circle"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <h2 class="text-light text text-center">J.A.R.V.I.S - AI VOICE ASSISTANT</h2>
+                    <h6 class="text-light text text-center">(Just a Rather Very Intelligent System)</h6>
+
+                    <div class="col-md-12 mt-4 pt-4">
+                        <div class="text-center">
+                            <div id="TextInput" class="d-flex">
+                                <input type="text" class="input-field" name="chatbox" id="chatbox"
+                                    placeholder="Enter your Command">
+
+                                <button id="SendBtn" class="glow-on-hover" hidden><i class="bi bi-send"></i></button>
+                                <button id="MicBtn" class="glow-on-hover"><i class="bi bi-mic"></i></button>
+                                <button id="ChatBtn" class="glow-on-hover" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"><i class="bi bi-chat-dots"></i></button>
+                                <button id="ListBtn" class="glow-on-hover" data-bs-toggle="offcanvas" data-bs-target="#offcanvasList" aria-controls="offcanvasList"><i class="bi bi-card-list"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <img src="assets/img/iron_portrait.jpg" style="height: 100vh;" alt="">
+
+
+                </div>
+            </div>
+
+        </section>
+        <section id="SiriWave" class="mb-4" hidden>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+                            <div class="">
+                                <p class="text-start text-light mb-4 siri-message">Hi, How can i help you?</p>
+                                <div id="siri-container"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="offcanvas offcanvas-start chat-canvas" tabindex="-1" data-bs-scroll="true" data-bs-backdrop="false" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title text-white" id="offcanvasScrollingLabel">Chats</h5>
+            <button type="button" class="btn-close btn-close-white  text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div id="chat-canvas-body" class="offcanvas-body">
+        </div>
+    </div>
+
+    <div class="offcanvas offcanvas-end list-canvas" tabindex="-1" data-bs-scroll="true" data-bs-backdrop="false" id="offcanvasList" aria-labelledby="offcanvasListLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title text-white" id="offcanvasListLabel">Commands List</h5>
+            <button type="button" class="btn-close btn-close-white text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div id="list-canvas-body" class="offcanvas-body">
+            <h2>List of Commands</h2>
+            <ul>
+                <!-- General Commands -->
+                <li><strong>Who are you?</strong>: Introduces JARVIS.</li>
+                <li><strong>Hi JARVIS</strong>: Greets JARVIS.</li>
+                <li><strong>Who created you?</strong>: Provides information about the creator.</li>
+                <li><strong>What is [topic]?</strong> or <strong>Who is [person]?</strong>: Fetches information from Wikipedia.</li>
+        
+                <!-- Music and Media -->
+                <li><strong>Play music</strong>: Plays a pre-specified music file.</li>
+                <li><strong>Open YouTube</strong>: Prompts for a video to play on YouTube.</li>
+                <li><strong>Search on YouTube [query]</strong>: Searches for a query on YouTube.</li>
+        
+                <!-- Web and Browsing -->
+                <li><strong>Open Google</strong>: Prompts for a search query and opens Google with the results.</li>
+                <li><strong>Search on Google [query]</strong>: Searches for a query on Google.</li>
+                <li><strong>Close Safari</strong>: Closes the Safari browser.</li>
+                <li><strong>Open new tab</strong>: Opens a new browser tab.</li>
+                <li><strong>Open new window</strong>: Opens a new browser window.</li>
+                <li><strong>Close this tab</strong>: Closes the current browser tab.</li>
+        
+                <!-- System Control -->
+                <li><strong>Shutdown</strong>: Shuts down the Mac (requires confirmation).</li>
+                <li><strong>Restart</strong>: Restarts the Mac (requires confirmation).</li>
+                <li><strong>Take a screenshot</strong>: Takes a screenshot and saves it with a specified name.</li>
+                <li><strong>Set volume</strong>: Sets the Mac volume to max, 50 percent, mute, or unmute.</li>
+        
+                <!-- Messaging -->
+                <li><strong>WhatsApp</strong>: Sends a WhatsApp message. Prompts for the recipient's number and message content.</li>
+        
+                <!-- Miscellaneous -->
+                <li><strong>The time</strong>: Tells the current time.</li>
+                <li><strong>Temperature</strong>: Provides the current temperature (functionality depends on the <code>temp</code> module).</li>
+                <li><strong>Joke</strong>: Tells a joke.</li>
+                <li><strong>Generate image</strong>: Generates an image based on a described prompt.</li>
+        
+                <!-- Exiting -->
+                <li><strong>Exit</strong>: Signs off JARVIS and ends the session.</li>
+            </ul>
+        
+            <!-- Optional additional description or instructions -->
+            <p>Simply speak the command as listed above, and JARVIS will perform the action. If the command requires additional input, JARVIS will prompt you accordingly.</p>
+        </div>
+    </div>
+
+    <!-- JQuery JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+    <!-- Custom Particle JS -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery-min.js'></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+    <script src="script.js"></script>
+
+    <!-- Siri Wave JS -->
+    <script src="https://unpkg.com/siriwave/dist/siriwave.umd.min.js"></script>
+    <!-- Texllate JS -->
+    <script src="texllate/jquery.fittext.js"></script>
+    <script src="texllate/jquery.lettering.js"></script>
+    <script src="http://jschr.github.io/textillate/jquery.textillate.js"></script>
+
+
+
+    <script src="main.js"></script>
+    <script src="controller.js"></script>
+    <script src="/eel.js"></script>
+    <script>
+        // Function to get the current date in dd-mm-yyyy format
+        function getCurrentDate() {
+            const currentDate = new Date();
+            const day = currentDate.getDate();
+            const month = currentDate.getMonth() + 1; // Note: January is 0!
+            const year = currentDate.getFullYear();
+            const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const dayOfWeek = daysOfWeek[currentDate.getDay()];
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            const monthName = monthNames[currentDate.getMonth()];
+    
+            // Pad day with leading zero if necessary
+            const formattedDay = String(day).padStart(2, '0');
+    
+            return `${formattedDay} ${monthName} ${year}, ${dayOfWeek}`;
+        }
+    
+        // Update the HTML element with the current date
+        document.getElementById('currentDate').innerText = getCurrentDate();
+    </script>
+    
+    
+</body>
+
+</html>
