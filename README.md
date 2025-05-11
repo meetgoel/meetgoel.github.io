@@ -1,11 +1,11 @@
 <h1 align="center">Hi 👋, I'm Meet Goel</h1>
 <h3 align="center">A Versatile Developer - “My codes are not just lines; it's the language of progress, seamlessly translating ideas into reality.”</h3>
 
-- 🔭 I’m currently working on **my Skills**
+- 🔭 I’m pursuing **MSc Data Science, AI, and Digital Business** from Gisma University of Applied Sciences - Potsdam, Germany
 
 - 🌱 I’m currently learning **Data Science & AI Machine Learning**
 
-- 👯 I’m looking to collaborate with **Google, Microsoft, Apple**
+- 👯 I’m looking to collaborate with **Google, Microsoft, Apple, or any tech related firms**
 
 - 🤝 I’m looking for help with **Freelancing**
 
