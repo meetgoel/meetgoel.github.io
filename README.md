@@ -1,4 +1,4 @@
-<h1 align="center">Hi 👋, I'm Meet Goel</h1>
+<h1 align="center">Hi!, I'm Meet Goel - Data Scientist</h1>
 <h3 align="center">A Versatile Developer - “My codes are not just lines; it's the language of progress, seamlessly translating ideas into reality.”</h3>
 
 - 🔭 I’m pursuing **MSc Data Science, AI, and Digital Business** from Gisma University of Applied Sciences - Potsdam, Germany
