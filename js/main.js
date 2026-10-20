@@ -1,150 +1,68 @@
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const finePointer = window.matchMedia("(pointer: fine)").matches;
 
-/* ---------- 3D hero: a rotating point-cloud globe with a wireframe core ---------- */
-function initScene() {
-  const canvas = document.getElementById("scene");
-  if (!canvas || !window.THREE) return;
-  let renderer;
-  try {
-    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  } catch (e) {
-    return; // no WebGL: the CSS glow behind the hero still shows
-  }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+/* Always start at the hero on reload */
+if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+if (!location.hash) window.scrollTo(0, 0);
 
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-  camera.position.set(0, 0, 9);
-
-  const group = new THREE.Group();
-  scene.add(group);
-
-  // Fibonacci sphere of points, coloured from blue to violet
-  const N = 1400, R = 2.6;
-  const pos = new Float32Array(N * 3), col = new Float32Array(N * 3);
-  const c1 = new THREE.Color("#2F8CFF"), c2 = new THREE.Color("#B7A8FF"), tmp = new THREE.Color();
-  const pts = [];
-  for (let i = 0; i < N; i++) {
-    const y = 1 - (i / (N - 1)) * 2, r = Math.sqrt(1 - y * y), th = Math.PI * (3 - Math.sqrt(5)) * i;
-    const jitter = 1 + (Math.random() - 0.5) * 0.06;
-    const v = new THREE.Vector3(Math.cos(th) * r, y, Math.sin(th) * r).multiplyScalar(R * jitter);
-    pts.push(v);
-    pos.set([v.x, v.y, v.z], i * 3);
-    tmp.copy(c1).lerp(c2, (y + 1) / 2);
-    col.set([tmp.r, tmp.g, tmp.b], i * 3);
-  }
-  const g = new THREE.BufferGeometry();
-  g.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-  g.setAttribute("color", new THREE.BufferAttribute(col, 3));
-  const points = new THREE.Points(g, new THREE.PointsMaterial({ size: 0.035, vertexColors: true, transparent: true, opacity: 0.9 }));
-  group.add(points);
-
-  // A few "synapses" between neighbouring points
-  const lp = [];
-  for (let k = 0; k < 260; k++) {
-    const a = pts[(Math.random() * N) | 0];
-    let best = null, bd = Infinity;
-    for (let t = 0; t < 40; t++) {
-      const b = pts[(Math.random() * N) | 0];
-      const d = a.distanceTo(b);
-      if (d > 0.05 && d < bd) { bd = d; best = b; }
-    }
-    if (best && bd < 0.9) lp.push(a.x, a.y, a.z, best.x, best.y, best.z);
-  }
-  const lg = new THREE.BufferGeometry();
-  lg.setAttribute("position", new THREE.Float32BufferAttribute(lp, 3));
-  group.add(new THREE.LineSegments(lg, new THREE.LineBasicMaterial({ color: 0x5aa8ff, transparent: true, opacity: 0.22 })));
-
-  // Wireframe core turning the other way
-  const core = new THREE.Mesh(
-    new THREE.IcosahedronGeometry(1.25, 1),
-    new THREE.MeshBasicMaterial({ color: 0x8b7cff, wireframe: true, transparent: true, opacity: 0.35 })
-  );
-  scene.add(core);
-
-  // Orbiting ring
-  const ring = new THREE.Mesh(
-    new THREE.TorusGeometry(3.4, 0.006, 8, 200),
-    new THREE.MeshBasicMaterial({ color: 0x7cc0ff, transparent: true, opacity: 0.4 })
-  );
-  ring.rotation.x = 1.2;
-  scene.add(ring);
-
-  let offsetX = 0;
-  function resize() {
-    const w = canvas.clientWidth, h = canvas.clientHeight;
-    renderer.setSize(w, h, false);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-    const wide = w > 900;
-    offsetX = wide ? 3.1 : 0;
-    const s = wide ? 1 : 0.8;
-    [group, core, ring].forEach((o) => { o.position.x = offsetX; o.scale.setScalar(s); });
-    points.material.opacity = wide ? 0.9 : 0.45;
-  }
-  window.addEventListener("resize", resize);
-  resize();
-
-  const mouse = { x: 0, y: 0 };
-  window.addEventListener("pointermove", (e) => {
-    mouse.x = e.clientX / window.innerWidth - 0.5;
-    mouse.y = e.clientY / window.innerHeight - 0.5;
-  });
-
-  let visible = true;
-  new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(canvas);
-
-  const clock = new THREE.Clock();
-  function frame() {
-    const t = clock.getElapsedTime();
-    group.rotation.y = t * 0.08 + mouse.x * 0.6;
-    group.rotation.x = mouse.y * 0.4;
-    core.rotation.y = -t * 0.2;
-    core.rotation.x = t * 0.1;
-    ring.rotation.z = t * 0.15;
-    // gentle breathing scroll response
-    const sy = Math.min(window.scrollY / window.innerHeight, 1);
-    camera.position.z = 9 + sy * 3;
-    renderer.render(scene, camera);
-  }
-  if (reduceMotion) { frame(); return; }
-  renderer.setAnimationLoop(() => { if (visible) frame(); });
-}
-
-/* ---------- Menu ---------- */
-function initMenu() {
-  const burger = document.querySelector(".burger");
-  const menu = document.getElementById("menu");
-  const setOpen = (open) => {
-    burger.setAttribute("aria-expanded", String(open));
-    burger.setAttribute("aria-label", open ? "Close menu" : "Open menu");
-    if (open) { menu.hidden = false; requestAnimationFrame(() => menu.classList.add("open")); }
-    else { menu.classList.remove("open"); setTimeout(() => { if (!menu.classList.contains("open")) menu.hidden = true; }, 600); }
-    document.body.style.overflow = open ? "hidden" : "";
-  };
-  burger.addEventListener("click", () => setOpen(burger.getAttribute("aria-expanded") !== "true"));
-  menu.addEventListener("click", (e) => { if (e.target.closest("a")) setOpen(false); });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && menu.classList.contains("open")) setOpen(false); });
-
-  const topbar = document.querySelector(".topbar");
-  const onScroll = () => topbar.classList.toggle("scrolled", window.scrollY > 10);
-  window.addEventListener("scroll", onScroll, { passive: true });
-  onScroll();
-}
-
-/* ---------- Scroll spy for the sidebar ---------- */
-function initSpy() {
-  const links = [...document.querySelectorAll(".sidebar nav a")];
-  const map = new Map(links.map((a) => [a.getAttribute("href").slice(1), a]));
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach((e) => {
-      if (!e.isIntersecting) return;
-      links.forEach((a) => a.classList.remove("active"));
-      map.get(e.target.id)?.classList.add("active");
+/* ---------- Smooth scrolling (Lenis) ---------- */
+let lenis = null;
+function initLenis() {
+  if (reduceMotion || !window.Lenis) return;
+  lenis = new Lenis({ duration: 1.15, smoothWheel: true });
+  const raf = (t) => { lenis.raf(t); requestAnimationFrame(raf); };
+  requestAnimationFrame(raf);
+  document.querySelectorAll('a[href^="#"]').forEach((a) => {
+    a.addEventListener("click", (e) => {
+      const id = a.getAttribute("href");
+      const el = id.length > 1 && document.querySelector(id);
+      if (!el) return;
+      e.preventDefault();
+      lenis.scrollTo(el, { offset: id === "#home" ? 0 : -70 });
     });
-  }, { rootMargin: "-45% 0px -50% 0px" });
-  map.forEach((_, id) => { const el = document.getElementById(id); if (el) io.observe(el); });
+  });
+}
+
+/* ---------- Hero: split the giant name into letters that rise in ---------- */
+function splitMega() {
+  const line = document.querySelector(".mega-line");
+  if (!line) return;
+  const text = line.textContent;
+  line.textContent = "";
+  [...text].forEach((c, n) => {
+    const s = document.createElement("span");
+    if (c === " ") { s.className = "gap"; line.appendChild(s); return; } // the chrome monogram sits here
+    s.className = "ch";
+    s.style.setProperty("--n", n);
+    s.textContent = c;
+    line.appendChild(s);
+  });
+}
+
+/* ---------- Text scramble on kickers ---------- */
+function scramble(el) {
+  const final = el.dataset.text || el.textContent;
+  el.dataset.text = final;
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&{}<>";
+  let frame = 0;
+  const total = 22;
+  const tick = () => {
+    el.textContent = [...final].map((c, i) => {
+      if (c === " ") return " ";
+      return frame / total > i / final.length ? c : chars[(Math.random() * chars.length) | 0];
+    }).join("");
+    if (frame++ < total) requestAnimationFrame(tick); else el.textContent = final;
+  };
+  tick();
+}
+function initScramble() {
+  const els = document.querySelectorAll(".fx-scramble");
+  if (reduceMotion) return;
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) { scramble(e.target); io.unobserve(e.target); } });
+  }, { threshold: 0.6 });
+  els.forEach((el) => io.observe(el));
+  els.forEach((el) => el.addEventListener("mouseenter", () => scramble(el)));
 }
 
 /* ---------- Reveal on scroll ---------- */
@@ -155,7 +73,7 @@ function initReveal() {
     entries.forEach((e) => {
       if (!e.isIntersecting) return;
       const sib = [...e.target.parentElement.children].filter((c) => c.classList.contains("reveal"));
-      e.target.style.transitionDelay = `${Math.min(sib.indexOf(e.target), 6) * 60}ms`;
+      e.target.style.transitionDelay = `${Math.min(sib.indexOf(e.target), 6) * 70}ms`;
       e.target.classList.add("in");
       io.unobserve(e.target);
     });
@@ -163,28 +81,91 @@ function initReveal() {
   els.forEach((e) => io.observe(e));
 }
 
-/* ---------- 3D tilt and spotlight on cards ---------- */
-function initTilt() {
-  if (reduceMotion || !finePointer) return;
+/* ---------- Scroll-linked effects: word fill, tilted gallery drift, section glow ---------- */
+function initScrollFx() {
+  const words = [...document.querySelectorAll(".sw")];
+  const rows = [...document.querySelectorAll(".tg-row")];
+  const about = document.querySelector(".about");
+  const glows = { blue: "47, 140, 255", purple: "166, 108, 255", green: "74, 222, 128" };
+  const secs = [...document.querySelectorAll("[data-glow]")];
+  let current = "";
+
+  const update = () => {
+    const vh = window.innerHeight;
+    words.forEach((w) => {
+      const r = w.getBoundingClientRect();
+      const p = Math.max(0, Math.min(1, (vh * 0.85 - r.top) / (vh * 0.45)));
+      w.style.setProperty("--p", `${(p * 100).toFixed(1)}%`);
+    });
+    if (about) {
+      const r = about.getBoundingClientRect();
+      const t = (vh - r.top) / (vh + r.height);
+      rows.forEach((row, i) => {
+        const dir = Number(row.dataset.dir);
+        row.style.transform = `translate3d(${(dir * (t - 0.5) * 520 - (i % 2 ? 260 : 0)).toFixed(1)}px,0,0)`;
+      });
+    }
+    const mid = vh * 0.4;
+    const active = secs.find((s) => { const r = s.getBoundingClientRect(); return r.top <= mid && r.bottom >= mid; });
+    const g = active ? active.dataset.glow : "blue";
+    if (g !== current) { current = g; document.documentElement.style.setProperty("--glow", glows[g]); }
+  };
+  if (reduceMotion) { words.forEach((w) => w.style.setProperty("--p", "100%")); }
+  else window.addEventListener("scroll", update, { passive: true });
+  window.addEventListener("resize", update);
+  update();
+}
+
+/* ---------- Cursor glow, spotlight borders and 3D tilt ---------- */
+function initPointerFx() {
+  if (!finePointer) return;
+  const glow = document.querySelector(".cursor-glow");
+  window.addEventListener("pointermove", (e) => {
+    glow.style.setProperty("--cx", `${e.clientX}px`);
+    glow.style.setProperty("--cy", `${e.clientY}px`);
+  });
+  document.querySelectorAll(".spot").forEach((el) => {
+    el.addEventListener("pointermove", (e) => {
+      const r = el.getBoundingClientRect();
+      el.style.setProperty("--mx", `${e.clientX - r.left}px`);
+      el.style.setProperty("--my", `${e.clientY - r.top}px`);
+    });
+  });
+  if (reduceMotion) return;
   document.querySelectorAll(".tilt").forEach((el) => {
     el.addEventListener("pointermove", (e) => {
       const r = el.getBoundingClientRect();
       const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
       el.style.transform = `perspective(900px) rotateX(${(0.5 - y) * 8}deg) rotateY(${(x - 0.5) * 10}deg) translateY(-4px)`;
-      el.style.setProperty("--mx", `${x * 100}%`);
-      el.style.setProperty("--my", `${y * 100}%`);
     });
     el.addEventListener("pointerleave", () => { el.style.transform = ""; });
   });
 }
 
-/* ---------- Tab filters ---------- */
+/* ---------- Menu ---------- */
+function initMenu() {
+  const burger = document.querySelector(".burger");
+  const menu = document.getElementById("menu");
+  const setOpen = (open) => {
+    burger.setAttribute("aria-expanded", String(open));
+    burger.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    if (open) { menu.hidden = false; requestAnimationFrame(() => menu.classList.add("open")); lenis?.stop(); }
+    else { menu.classList.remove("open"); lenis?.start(); setTimeout(() => { if (!menu.classList.contains("open")) menu.hidden = true; }, 700); }
+    document.body.style.overflow = open ? "hidden" : "";
+  };
+  burger.addEventListener("click", () => setOpen(burger.getAttribute("aria-expanded") !== "true"));
+  menu.addEventListener("click", (e) => { if (e.target.closest("a")) setOpen(false); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && menu.classList.contains("open")) setOpen(false); });
+}
+
+/* ---------- Tabs ---------- */
 function bindTabs(group, onChange) {
   const tabs = group.querySelectorAll(".tab");
   tabs.forEach((t) => t.addEventListener("click", () => {
     tabs.forEach((x) => x.setAttribute("aria-pressed", String(x === t)));
     onChange(t.dataset.filter);
   }));
+  return (f) => tabs.forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.filter === f)));
 }
 
 function initProjects() {
@@ -214,7 +195,7 @@ const CERTS = [
   ["Web Designing", "V.S.A", "course", "Courses/Web Designing.jpeg"],
   ["IELTS", "IDP, British Council", "course featured", "others/IELTS.jpg"],
   ["Winter Training: Full Stack Development", "IIT Kanpur", "intern featured", "Training/IITK.jpg"],
-  ["Internship: Full Stack Development", "OpenWeaver", "intern featured", "Internships/Open Weaver - Full Stack_page-0001.jpg"],
+  ["Internship: Full Stack Development", "Open Weaver", "intern featured", "Internships/Open Weaver - Full Stack_page-0001.jpg"],
   ["Internship: Python with Data Structures and Algorithms", "YBI Foundation", "intern featured", "Internships/ybi.jpg"],
   ["Internship: C++ Programming", "TechnoHacks", "intern", "Internships/C++ TechnoHack_page-0001.jpg"],
   ["Internship: Android Development", "EduSkills", "intern", "Internships/Kotlin Eduskills_page-0001.jpg"],
@@ -249,13 +230,12 @@ function initCerts() {
     const b = document.createElement("button");
     b.className = "cert";
     b.dataset.cat = cats;
-    b.dataset.full = "assets/images/" + path;
     b.innerHTML = `<img src="assets/thumbs/${slug(path)}.webp" alt="" loading="lazy"><b></b><span></span>`;
     b.querySelector("b").textContent = title;
     b.querySelector("span").textContent = issuer;
     b.setAttribute("aria-label", `View certificate: ${title}, ${issuer}`);
     b.addEventListener("click", () => {
-      box.querySelector("img").src = b.dataset.full;
+      box.querySelector("img").src = "assets/images/" + path;
       box.querySelector("img").alt = `${title} certificate from ${issuer}`;
       box.querySelector("p").textContent = `${title}, ${issuer}`;
       box.showModal();
@@ -267,10 +247,39 @@ function initCerts() {
   const all = grid.querySelectorAll(".cert");
   const apply = (f) => all.forEach((c) => { c.hidden = !(f === "all" || c.dataset.cat.split(" ").includes(f)); });
   apply("featured");
-  bindTabs(document.getElementById("cert-tabs"), apply);
+  const select = bindTabs(document.getElementById("cert-tabs"), apply);
+
+  // fanned stacks: build images, and jump to the gallery filtered on click
+  document.querySelectorAll(".stack-card").forEach((card) => {
+    const fan = card.querySelector(".fan");
+    const srcs = fan.dataset.src.split(",");
+    const mid = (srcs.length - 1) / 2;
+    srcs.forEach((s, i) => {
+      const img = document.createElement("img");
+      img.src = `assets/thumbs/${s}.webp`;
+      img.alt = "";
+      img.loading = "lazy";
+      img.style.setProperty("--k", (i - mid).toString());
+      img.style.zIndex = String(10 - Math.abs(i - mid));
+      fan.appendChild(img);
+    });
+    card.addEventListener("click", () => {
+      apply(card.dataset.filter);
+      select(card.dataset.filter);
+      const target = document.getElementById("gallery");
+      lenis ? lenis.scrollTo(target, { offset: -90 }) : target.scrollIntoView({ behavior: "smooth" });
+    });
+  });
 
   box.querySelector(".lb-close").addEventListener("click", () => box.close());
   box.addEventListener("click", (e) => { if (e.target === box) box.close(); });
+}
+
+/* ---------- Marquee: duplicate the track for a seamless loop ---------- */
+function initMarquee() {
+  const track = document.querySelector(".marquee-track");
+  if (!track) return;
+  track.innerHTML += track.innerHTML.replace(/alt="[^"]*"/g, 'alt="" aria-hidden="true"');
 }
 
 /* ---------- Copy email ---------- */
@@ -288,11 +297,14 @@ function initCopy() {
   });
 }
 
+splitMega();
+initLenis();
 initMenu();
-initSpy();
 initReveal();
-initTilt();
+initScramble();
+initScrollFx();
+initPointerFx();
 initProjects();
 initCerts();
+initMarquee();
 initCopy();
-initScene();
