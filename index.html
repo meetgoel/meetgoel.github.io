@@ -592,8 +592,42 @@
     <p></p>
   </dialog>
 
+
+  <!-- Recruiter assistant -->
+  <button class="chat-fab" id="chat-fab" aria-expanded="false" aria-controls="chat-panel">
+    <span class="orb" aria-hidden="true"></span><span class="fab-label">Ask about Meet</span>
+  </button>
+  <section class="chat-panel" id="chat-panel" role="dialog" aria-label="Ask about Meet" hidden>
+    <header class="chat-head">
+      <img src="assets/thumbs/avatar.webp" alt="" width="40" height="40">
+      <div>
+        <h2>Meet’s assistant</h2>
+        <p id="chat-status"><span class="live"></span> Answers from Meet’s profile</p>
+      </div>
+      <button class="chat-close" id="chat-close" aria-label="Close chat">×</button>
+    </header>
+    <div class="chat-log" id="chat-log" aria-live="polite">
+      <div class="msg bot"><div class="msg-body"><p>Hi! I’m Meet’s assistant. Ask me anything about his <b>experience, skills, thesis or availability</b>, and I’ll answer from his real profile.</p></div></div>
+      <div class="chat-chips" id="chat-chips">
+        <button type="button">Why should we hire Meet?</button>
+        <button type="button">What did he do at Siemens Healthineers?</button>
+        <button type="button">Does he have experience with AI agents?</button>
+        <button type="button">What was his thesis about?</button>
+        <button type="button">Does he speak German?</button>
+        <button type="button">Where is he located?</button>
+      </div>
+    </div>
+    <form class="chat-form" id="chat-form" autocomplete="off">
+      <label class="sr-only" for="chat-input">Your question</label>
+      <input id="chat-input" type="text" maxlength="400" placeholder="Ask about skills, projects, availability…">
+      <button type="submit" aria-label="Send"><svg class="ico"><use href="#i-arrow"/></svg></button>
+    </form>
+    <p class="chat-foot">Runs entirely in your browser. Your questions are not sent to any server.</p>
+  </section>
+
   <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
   <script src="js/main.js" defer></script>
   <script type="module" src="js/scene.js"></script>
+  <script type="module" src="js/chat.js"></script>
 </body>
 </html>
