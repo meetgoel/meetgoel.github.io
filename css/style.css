@@ -169,12 +169,24 @@ a { color: inherit; }
 .fx-color:hover i { transform: translateY(-4px); }
 .fx-color:hover i:nth-child(2n) { transform: translateY(3px) rotate(6deg); }
 
-/* Stacked words */
-.stack-words { padding: 14vh var(--gutter); text-align: center; }
-.sw {
-  font-family: var(--display); text-transform: uppercase; font-size: clamp(3rem, 11vw, 9.5rem); line-height: .95;
+/* Stacked words: fill on scroll, ticker on hover */
+.stack-words { padding: 14vh 0; text-align: center; overflow: hidden; }
+.sw { position: relative; display: block; text-decoration: none; color: inherit; }
+.sw-text {
+  display: inline-block; font-family: var(--display); text-transform: uppercase; font-size: clamp(3rem, 11vw, 9.5rem); line-height: .95;
   background: linear-gradient(90deg, #fff var(--p, 0%), #2A2A30 var(--p, 0%)); -webkit-background-clip: text; background-clip: text; color: transparent;
+  transition: opacity .45s var(--ease), filter .45s var(--ease);
 }
+.sw-ticker {
+  position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); overflow: hidden; white-space: nowrap; pointer-events: none;
+  font: 500 clamp(.72rem, 1.1vw, .95rem)/1 var(--font); letter-spacing: .04em; color: #E6E6EA; opacity: 0; transition: opacity .35s var(--ease);
+}
+.sw-ticker > span { display: inline-block; animation: tick 16s linear infinite; animation-play-state: paused; }
+.sw:hover .sw-text, .sw:focus-visible .sw-text { opacity: .22; filter: blur(.5px); }
+.sw:hover .sw-ticker, .sw:focus-visible .sw-ticker { opacity: 1; }
+.sw:hover .sw-ticker > span, .sw:focus-visible .sw-ticker > span { animation-play-state: running; }
+@keyframes tick { to { transform: translateX(-50%); } }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* Sections */
 .sec { width: min(var(--max), 100%); margin: 0 auto; padding: 120px var(--gutter) 40px; position: relative; z-index: 1; }

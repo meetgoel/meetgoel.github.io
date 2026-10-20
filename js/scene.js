@@ -148,40 +148,75 @@ function globe() {
   run(canvas, renderer, scene, camera, (t) => { globeGroup.rotation.y = t * 0.18; });
 }
 
-/* ---------- Contact: morphing chrome blob ---------- */
-function blob() {
+/* ---------- Contact: glossy black liquid metaballs ---------- */
+// Black studio with a window-grid softbox, so the black spheres pick up crisp pane reflections.
+function windowEnv(renderer) {
+  const env = new THREE.Scene();
+  env.background = new THREE.Color(0x000000);
+  const lit = (w, h, x, y, z, k) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(0xffffff).multiplyScalar(k), side: THREE.DoubleSide }));
+    m.position.set(x, y, z);
+    m.lookAt(0, 0, 0);
+    env.add(m);
+  };
+  // 2x2 window grid up front and above
+  [[-1.3, 5.6], [1.3, 5.6], [-1.3, 3.0], [1.3, 3.0]].forEach(([x, y]) => lit(2.4, 2.4, x, y, 7, 10));
+  lit(14, 3, 0, -6, -2, 1.1);   // soft grey floor bounce for the lower rim
+  lit(0.8, 7, -7, 1, 1, 2.2);    // side strip
+  lit(0.8, 7, 7, 0, -1, 1.4);    // opposite strip
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  return pmrem.fromScene(env, 0.01).texture;
+}
+
+async function blob() {
   const canvas = document.getElementById("blob");
   const renderer = canvas && makeRenderer(canvas);
   if (!renderer) return;
+  const { MarchingCubes } = await import("three/addons/objects/MarchingCubes.js");
+  renderer.toneMappingExposure = 1.5;
   const scene = new THREE.Scene();
-  scene.environment = chromeEnv(renderer);
-  const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
-  camera.position.set(0, 0, 6);
-  const light = new THREE.PointLight(0x4f9dff, 50, 30);
-  light.position.set(-3, 2, 4);
-  scene.add(light);
+  scene.environment = windowEnv(renderer);
+  const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+  camera.position.set(0, 0, 7.5);
 
-  const geo = new THREE.IcosahedronGeometry(1.5, 48);
-  const base = geo.attributes.position.array.slice();
-  const mat = new THREE.MeshPhysicalMaterial({ color: 0xd8d9e0, metalness: 1, roughness: 0.08, clearcoat: 1, envMapIntensity: 1.5 });
-  const mesh = new THREE.Mesh(geo, mat);
-  const small = new THREE.Mesh(new THREE.SphereGeometry(0.42, 48, 48), mat);
-  scene.add(mesh, small);
+  const mat = new THREE.MeshPhysicalMaterial({
+    color: 0x0a0a0c, metalness: 0.35, roughness: 0.03, clearcoat: 1, clearcoatRoughness: 0.02, envMapIntensity: 2.2,
+  });
+  const balls = new MarchingCubes(56, mat, false, false, 60000);
+  balls.scale.setScalar(4.1);
+  scene.add(balls);
 
-  const p = geo.attributes.position;
-  const v = new THREE.Vector3();
+  // Droplets rise from below, merge into the central drop, then pinch off and float out the top.
+  const N = 6, T = 13;
+  const seeds = Array.from({ length: N }, (_, i) => ({
+    sx: 0.18 + ((i * 0.37) % 0.64),
+    ex: 0.2 + ((i * 0.53 + 0.3) % 0.6),
+    z: 0.42 + ((i * 0.29) % 0.16),
+    str: 0.28 + ((i * 0.17) % 0.18),
+  }));
+  const easeOut = (x) => 1 - Math.pow(1 - x, 3);
+  const easeIn = (x) => x * x * x;
+  const mix = (a, b, k) => a + (b - a) * k;
+
   run(canvas, renderer, scene, camera, (t) => {
-    for (let i = 0; i < p.count; i++) {
-      v.set(base[i * 3], base[i * 3 + 1], base[i * 3 + 2]).normalize();
-      const n = Math.sin(v.x * 2.4 + t * 1.1) * 0.5 + Math.sin(v.y * 3.1 + t * 0.9) * 0.35 + Math.sin(v.z * 2.7 + t * 1.3) * 0.3;
-      v.multiplyScalar(1.5 + n * 0.22);
-      p.setXYZ(i, v.x, v.y, v.z);
-    }
-    p.needsUpdate = true;
-    geo.computeVertexNormals();
-    mesh.rotation.y = t * 0.2 + mouse.x * 0.6;
-    mesh.rotation.x = mouse.y * 0.4;
-    small.position.set(Math.cos(t * 0.7) * 2.1, Math.sin(t * 0.9) * 1.1, Math.sin(t * 0.7) * 1.2);
+    balls.reset();
+    // the main drop breathes and drifts a little
+    balls.addBall(0.5 + Math.sin(t * 0.5) * 0.04, 0.52 + Math.cos(t * 0.4) * 0.04, 0.5, 1.25, 12);
+    seeds.forEach((d, i) => {
+      const ph = (t / T + i / N) % 1;
+      let x, y;
+      if (ph < 0.45) {
+        const k = easeOut(ph / 0.45);
+        x = mix(d.sx, 0.5, k); y = mix(-0.2, 0.5, k);
+      } else {
+        const k = easeIn((ph - 0.45) / 0.55);
+        x = mix(0.5, d.ex, k); y = mix(0.5, 1.25, k);
+      }
+      balls.addBall(x, y, d.z, d.str, 12);
+    });
+    balls.update();
+    balls.rotation.y = Math.sin(t * 0.2) * 0.25 + mouse.x * 0.3;
+    balls.rotation.x = mouse.y * 0.2;
   });
 }
 

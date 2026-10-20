@@ -83,7 +83,7 @@ function initReveal() {
 
 /* ---------- Scroll-linked effects: word fill, tilted gallery drift, section glow ---------- */
 function initScrollFx() {
-  const words = [...document.querySelectorAll(".sw")];
+  const words = [...document.querySelectorAll(".sw")];  // --p is inherited by .sw-text
   const rows = [...document.querySelectorAll(".tg-row")];
   const about = document.querySelector(".about");
   const glows = { blue: "47, 140, 255", purple: "166, 108, 255", green: "74, 222, 128" };
@@ -170,11 +170,14 @@ function bindTabs(group, onChange) {
 
 function initProjects() {
   const cards = document.querySelectorAll("#project-grid .card");
-  bindTabs(document.querySelector("#projects .tabs"), (f) => {
-    cards.forEach((c) => {
-      c.hidden = !(f === "all" || c.dataset.cat.split(" ").includes(f));
-      if (!c.hidden) c.classList.add("in");
-    });
+  const apply = (f) => cards.forEach((c) => {
+    c.hidden = !(f === "all" || c.dataset.cat.split(" ").includes(f));
+    if (!c.hidden) c.classList.add("in");
+  });
+  const select = bindTabs(document.querySelector("#projects .tabs"), apply);
+  // the big words above Experience jump to the matching projects
+  document.querySelectorAll(".sw[data-filter]").forEach((a) => {
+    a.addEventListener("click", () => { apply(a.dataset.filter); select(a.dataset.filter); });
   });
 }
 
