@@ -9,13 +9,13 @@
 
 - 🤝 I’m looking for help with **Freelancing**
 
-- 👨‍💻 All of my projects are available at [https://meetgoel.github.io/projects.html](https://meetgoel.github.io/projects.html)
+- 👨‍💻 All of my projects are available at [https://meetgoel.github.io/#work](https://meetgoel.github.io/projects.html)
 
 - 💬 Ask me about **Programming Languages & Tech Support**
 
 - 📫 How to reach me **meetgoel12345@gmail.com**
 
-- 📄 Know about my experiences [https://meetgoel.github.io/download/meet%20resume.pdf](https://meetgoel.github.io/download/meet%20resume.pdf)
+- 📄 Know about my experiences [https://meetgoel.github.io/download/meet_goel_cv.pdf](https://meetgoel.github.io/download/meet%20resume.pdf)
 
 - ⚡ Fun fact **Born to Express, Not to Impress**
 
