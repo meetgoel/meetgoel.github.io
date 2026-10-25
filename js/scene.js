@@ -1,4 +1,4 @@
-// Three.js scenes: chrome monogram (hero), point-cloud globe (toolbox), chrome blob (contact).
+// Three.js scenes: chrome monogram (hero), point-cloud globe (toolbox), dark water droplet (contact).
 import * as THREE from "three";
 import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
@@ -148,24 +148,23 @@ function globe() {
   run(canvas, renderer, scene, camera, (t) => { globeGroup.rotation.y = t * 0.18; });
 }
 
-/* ---------- Contact: glossy black liquid metaballs ---------- */
-// Black studio with a window-grid softbox, so the black spheres pick up crisp pane reflections.
-function windowEnv(renderer) {
+/* ---------- Contact: dark matte water droplet that follows the cursor ---------- */
+// Soft studio: one large diffuse light above and a dim fill, so the drop reads dark with a satin sheen
+// instead of bright mirror edges.
+function softEnv(renderer) {
   const env = new THREE.Scene();
-  env.background = new THREE.Color(0x000000);
-  const lit = (w, h, x, y, z, k) => {
-    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(0xffffff).multiplyScalar(k), side: THREE.DoubleSide }));
+  env.background = new THREE.Color(0x020203);
+  const lit = (w, h, x, y, z, k, c = 0xffffff) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(c).multiplyScalar(k), side: THREE.DoubleSide }));
     m.position.set(x, y, z);
     m.lookAt(0, 0, 0);
     env.add(m);
   };
-  // 2x2 window grid up front and above
-  [[-1.3, 5.6], [1.3, 5.6], [-1.3, 3.0], [1.3, 3.0]].forEach(([x, y]) => lit(2.4, 2.4, x, y, 7, 10));
-  lit(14, 3, 0, -6, -2, 1.1);   // soft grey floor bounce for the lower rim
-  lit(0.8, 7, -7, 1, 1, 2.2);    // side strip
-  lit(0.8, 7, 7, 0, -1, 1.4);    // opposite strip
+  lit(9, 6, -1, 7, 4, 3.2);              // big soft key above
+  lit(10, 4, 0, -6, 3, 0.25, 0x7cc0ff);  // faint cool bounce from below
+  lit(4, 6, 6, 1, 6, 0.35);              // dim fill
   const pmrem = new THREE.PMREMGenerator(renderer);
-  return pmrem.fromScene(env, 0.01).texture;
+  return pmrem.fromScene(env, 0.05).texture;
 }
 
 async function blob() {
@@ -173,50 +172,71 @@ async function blob() {
   const renderer = canvas && makeRenderer(canvas);
   if (!renderer) return;
   const { MarchingCubes } = await import("three/addons/objects/MarchingCubes.js");
-  renderer.toneMappingExposure = 1.5;
+  renderer.toneMappingExposure = 1.0;
   const scene = new THREE.Scene();
-  scene.environment = windowEnv(renderer);
+  scene.environment = softEnv(renderer);
   const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
   camera.position.set(0, 0, 7.5);
 
+  // dark water: deep blue-black body, satin (not mirror) surface
   const mat = new THREE.MeshPhysicalMaterial({
-    color: 0x0a0a0c, metalness: 0.35, roughness: 0.03, clearcoat: 1, clearcoatRoughness: 0.02, envMapIntensity: 2.2,
+    color: 0x0b0f16, metalness: 0.0, roughness: 0.38, clearcoat: 0.35, clearcoatRoughness: 0.45,
+    sheen: 0.5, sheenRoughness: 0.6, sheenColor: new THREE.Color(0x22324d), envMapIntensity: 1.15,
   });
   const balls = new MarchingCubes(56, mat, false, false, 60000);
-  balls.scale.setScalar(4.1);
+  const SCALE = 4.1;
+  balls.scale.setScalar(SCALE);
   scene.add(balls);
 
-  // Droplets rise from below, merge into the central drop, then pinch off and float out the top.
-  const N = 6, T = 13;
+  // ---- cursor following: map the pointer onto the droplet's volume (0..1 on each axis) ----
+  const card = canvas.parentElement;
+  const target = { x: 0.5, y: 0.52 }, head = { x: 0.5, y: 0.52 }, tail = { x: 0.5, y: 0.52 };
+  let hovering = false;
+  const ray = new THREE.Raycaster(), plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0), hit = new THREE.Vector3();
+  card.addEventListener("pointermove", (e) => {
+    const r = canvas.getBoundingClientRect();
+    ray.setFromCamera(new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1), camera);
+    if (ray.ray.intersectPlane(plane, hit)) {
+      // keep the whole drop inside the visible card: limit by the camera's view minus the drop's radius
+      const halfH = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.position.z, halfW = halfH * camera.aspect, R = 1.95;
+      const lx = Math.max(0, halfW - R) / (2 * SCALE), ly = Math.max(0, halfH - R) / (2 * SCALE);
+      target.x = Math.min(0.5 + lx, Math.max(0.5 - lx, (hit.x / SCALE + 1) / 2));
+      target.y = Math.min(0.52 + ly, Math.max(0.52 - ly, (hit.y / SCALE + 1) / 2));
+      hovering = true;
+    }
+  });
+  card.addEventListener("pointerleave", () => { hovering = false; target.x = 0.5; target.y = 0.52; });
+
+  // Small droplets rise, merge into the main drop wherever it is, then pinch off and float away.
+  const N = 5, T = 14;
   const seeds = Array.from({ length: N }, (_, i) => ({
-    sx: 0.18 + ((i * 0.37) % 0.64),
-    ex: 0.2 + ((i * 0.53 + 0.3) % 0.6),
-    z: 0.42 + ((i * 0.29) % 0.16),
-    str: 0.28 + ((i * 0.17) % 0.18),
+    sx: 0.2 + ((i * 0.37) % 0.6), ex: 0.22 + ((i * 0.53 + 0.3) % 0.56),
+    z: 0.44 + ((i * 0.29) % 0.12), str: 0.22 + ((i * 0.17) % 0.14),
   }));
   const easeOut = (x) => 1 - Math.pow(1 - x, 3);
   const easeIn = (x) => x * x * x;
   const mix = (a, b, k) => a + (b - a) * k;
 
   run(canvas, renderer, scene, camera, (t) => {
+    // the head chases the cursor; the tail lags behind, which stretches the drop like liquid
+    const k = hovering ? 0.09 : 0.04;
+    head.x += (target.x - head.x) * k;  head.y += (target.y - head.y) * k;
+    tail.x += (head.x - tail.x) * 0.06; tail.y += (head.y - tail.y) * 0.06;
+    const wob = hovering ? 0.012 : 0.035;
+    const hx = head.x + Math.sin(t * 0.5) * wob, hy = head.y + Math.cos(t * 0.4) * wob;
+
     balls.reset();
-    // the main drop breathes and drifts a little
-    balls.addBall(0.5 + Math.sin(t * 0.5) * 0.04, 0.52 + Math.cos(t * 0.4) * 0.04, 0.5, 1.25, 12);
+    balls.addBall(hx, hy, 0.5, 1.0, 12);
+    balls.addBall(tail.x, tail.y, 0.5, 0.45, 12);
     seeds.forEach((d, i) => {
       const ph = (t / T + i / N) % 1;
       let x, y;
-      if (ph < 0.45) {
-        const k = easeOut(ph / 0.45);
-        x = mix(d.sx, 0.5, k); y = mix(-0.2, 0.5, k);
-      } else {
-        const k = easeIn((ph - 0.45) / 0.55);
-        x = mix(0.5, d.ex, k); y = mix(0.5, 1.25, k);
-      }
+      if (ph < 0.45) { const q = easeOut(ph / 0.45); x = mix(d.sx, hx, q); y = mix(-0.2, hy, q); }
+      else { const q = easeIn((ph - 0.45) / 0.55); x = mix(hx, d.ex, q); y = mix(hy, 1.25, q); }
       balls.addBall(x, y, d.z, d.str, 12);
     });
     balls.update();
-    balls.rotation.y = Math.sin(t * 0.2) * 0.25 + mouse.x * 0.3;
-    balls.rotation.x = mouse.y * 0.2;
+    balls.rotation.y = Math.sin(t * 0.2) * 0.12;
   });
 }
 
