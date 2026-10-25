@@ -11,7 +11,7 @@ const MATCH_OK = 0.6;          // cosine similarity for a confident curated answ
 const MATCH_MAYBE = 0.42;      // close enough to show as a fallback
 
 /* ---------- Facts given to the on-device model (plus the top curated answers) ---------- */
-const CORE = `Meet Goel is a data scientist based in Berlin. Since Feb 2026 he works at Siemens Healthineers in Erlangen (IT Order-to-Cash intern, then Working Student in Service Management and Operations since May 2026). MSc Data Science, AI and Digital Business at Gisma University (2024 to 2026). Open to data scientist, ML engineer, AI automation and data analyst roles, on-site or hybrid in Berlin, Erlangen, Munich, Frankfurt or Nuremberg. English professional, German A2, Hindi native. Email: meetgoel12345@gmail.com. Unknown: start date, notice period, salary, visa details.`;
+const CORE = `Meet Goel is an AI and data professional based in Erlangen, Germany. Since Feb 2026 he works at Siemens Healthineers in Erlangen: IT Order-to-Cash intern (Feb to May 2026: Generative AI agents in Microsoft Copilot Studio, interface architecture in SAP Signavio), then Working Student in Service Management and Operations (since May 2026: built Ticket-to-Talk, a Copilot Studio agent turning SHARP incident exports into a KPI dashboard, incident summary and PowerPoint decks; built the Interface Catalogue, a Power Apps app on a 13-table Azure SQL model with Excel bulk ingestion and T-SQL business rules). M.Sc. Data Science, AI and Digital Business at Gisma University (2024 to 2026), thesis on cross-lingual offensive language detection comparing fine-tuned transformers with Qwen2.5 prompting. Open to AI consultant, data scientist, AI engineer and data analyst roles, on-site or hybrid in Erlangen, Nuremberg, Munich, Berlin or Frankfurt. English professional, German limited (A2), Hindi native. Email: meetgoel12345@gmail.com. Unknown: start date, notice period, salary, visa details.`;
 
 function buildSystem(facts) {
   return `You answer a recruiter's questions about the job candidate Meet Goel, using only the facts below.
@@ -28,122 +28,121 @@ ${facts.map((f) => "- " + f.replace(/\*\*/g, "").replace(/\n/g, " ")).join("\n")
 const KB = [
   {
     q: ["Who is Meet?", "Tell me about Meet", "Give me a quick summary", "Introduce the candidate", "What is his background?"],
-    a: "Meet is a **data scientist in Berlin** and a working student at **Siemens Healthineers** in Erlangen. He combines an MSc in Data Science, AI and Digital Business with an NLP thesis, hands-on ML projects and real enterprise experience building AI agents and mapping IT systems. Before data science he built web apps, so he understands how models reach real users.",
+    a: "Meet Goel is an **AI and data professional based in Erlangen** who already does the work many graduates only describe. As a working student at **Siemens Healthineers**, he designs Generative AI agents that turn raw operational data into KPI dashboards and management-ready reports, and he builds the governed Azure SQL data models behind them. He pairs that hands-on enterprise experience with an **M.Sc. in Data Science, AI and Digital Business** and a research thesis on multilingual NLP. In short: someone who can talk to the business, build the solution, and back it with solid data science. Happy to tell you more about any part of his work.",
   },
   {
     q: ["Why should we hire Meet?", "What are his strengths?", "What makes him stand out?", "Why is he a good fit?", "What value would he bring?"],
-    a: "Three things stand out:\n- **Industry proof:** at Siemens Healthineers he mapped 50+ systems around the ERP and built Copilot AI agents that turn complex documents into structured insights.\n- **Research rigour:** his thesis compared XLM-R and Qwen2.5 across 3 languages and 3 seeds, and showed why Macro-F1 matters more than accuracy on imbalanced data.\n- **End-to-end skills:** from data cleaning and modelling to Streamlit apps deployed on AWS.\nHe is also self-motivated and used to working across teams.",
+    a: "Because Meet brings **proof, not just potential**. At Siemens Healthineers he has already built AI agents for real business teams: **Ticket-to-Talk** turns incident exports into KPI dashboards, incident summaries and presentation-ready PowerPoint decks for management. He also built the **Interface Catalogue**, a 13-table Azure SQL application that gave his department one source of truth for interface data. On top of that, his master’s research shows real analytical rigour: he benchmarked fine-tuned transformers against an open-weight LLM and validated every result across multiple seeds. You get someone who understands the business problem, builds a working solution and checks that it actually holds up. That combination is rare at this stage of a career.",
   },
   {
-    q: ["What did he do at Siemens Healthineers?", "Tell me about his internship", "Order-to-Cash project", "What was his Siemens internship about?", "Industry experience", "Has he worked at a big company?", "Corporate experience", "Enterprise or large company experience", "Professional work experience"],
-    a: "As **IT Order-to-Cash intern at Siemens Healthineers** (Feb to May 2026) Meet visualised the OTC IT ecosystem: more than **50 satellite systems** connected to the ERP, modelled as nodes and directional flows. He worked with several departments and data experts, evaluated Power BI, LeanIX, SAP Signavio and Power Apps, and chose **SAP Signavio** as the best fit. He also built **AI agents in Microsoft Copilot** to analyse complex documents and worked within the Azure DevOps lifecycle.",
+    q: ["What does he do at Siemens Healthineers?", "What is his current role?", "Is he working now?", "Working student role", "Service management and operations", "Ticket-to-Talk", "Tell me about his AI agent"],
+    a: "Since May 2026 Meet has been a **Working Student in Service Management and Operations at Siemens Healthineers** in Erlangen, and his work there goes well beyond a typical student job. He built **Ticket-to-Talk**, a Microsoft Copilot Studio agent that analyses incident exports from the SHARP ticketing system and produces a filterable KPI dashboard with an incident summary. He then extended it to generate **PowerPoint decks in the team’s own template**, turning raw incident data into ready-made management reporting. Alongside that he built the **Interface Catalogue** in Power Apps on Azure SQL, with bulk Excel ingestion and business rules in T-SQL. It’s the kind of AI-plus-data work most companies are trying to hire for right now.",
   },
   {
-    q: ["What is his current role?", "Is he working now?", "Working student role", "Service management and operations", "What does he do today?"],
-    a: "Since May 2026 Meet is a **Working Student in Service Management and Operations at Siemens Healthineers** in Erlangen. He works with **Microsoft Copilot Studio, Power Automate, Power Apps**, SAP Solution Manager and SharePoint on operational processes and service delivery, following his internship there.",
+    q: ["What did he do in his internship?", "Order-to-Cash project", "What was his Siemens internship about?", "Has he worked at a big company?", "Corporate experience", "Enterprise or large company experience", "Industry experience"],
+    a: "Meet joined **Siemens Healthineers** as an **IT Order-to-Cash intern** (Feb to May 2026), his first corporate role, and he made an impact quickly. He designed and deployed **several Generative AI agents in Microsoft Copilot Studio**, translating department process requirements into working solutions. He also modelled the **Order-to-Cash interface architecture in SAP Signavio**, mapping how business processes flow across integrated enterprise systems. Siemens Healthineers then kept him on as a working student in Service Management and Operations, which says a lot about the value he delivered in a large, regulated healthcare company.",
   },
   {
-    q: ["Does he have experience with AI agents?", "Generative AI experience", "LLM experience", "Copilot Studio", "Automation experience", "Has he worked with large language models?"],
-    a: "Yes. At Siemens Healthineers Meet built **AI agents with Microsoft Copilot** that analyse complex documents and return structured insights, and he now works with **Copilot Studio and Power Automate**. In research, his thesis tested **in-context learning with Qwen2.5-1.5B** against fine-tuned XLM-R. He also attended SAP AI workshops on Joule, BTP, AI Core and MCP servers, and built a Streamlit app with a GPT-4 assistant.",
+    q: ["Does he have experience with AI agents?", "Generative AI experience", "LLM experience", "Copilot Studio", "Automation experience", "Has he worked with large language models?", "Can he build AI solutions?"],
+    a: "Yes, and it’s his strongest area. At Siemens Healthineers Meet has **designed and deployed multiple Generative AI agents in Microsoft Copilot Studio**. The standout is **Ticket-to-Talk**, which turns incident data into KPI dashboards and PowerPoint reports, and he has also automated communication documentation with Copilot Studio and Power Automate. On the research side, his thesis put an open-weight LLM (**Qwen2.5**) head-to-head with fine-tuned transformers, so he understands not just how to use LLMs but **when they work and when they don’t**. That mix of practical agent building and honest evaluation is exactly what a company needs to get real value from GenAI.",
   },
   {
     q: ["What was his thesis about?", "Master thesis", "Research experience", "Tell me about his NLP research", "What did his research find?"],
-    a: "His thesis studied **offensive language detection in low-resource languages** (Kannada, Tamil, Malayalam) with only 0 to 500 labelled examples. Key results:\n- **0.61 Macro-F1** on Kannada with zero Kannada labels\n- fine-tuned **XLM-R beat Qwen2.5 in-context learning in all 6 settings**\n- about **90% of the full-data baseline** with just 500 labels\nIt also showed how 96% accuracy can hide a model that predicts only one class.",
+    a: "Meet’s master’s thesis tackles a hard, real-world problem: **detecting offensive language in Tamil, Malayalam and Kannada**, languages with very little labelled data. He built a full Python NLP pipeline testing zero-shot, few-shot (50, 100 and 500 examples) and monolingual setups, and benchmarked fine-tuned transformer models against **LLM prompting with Qwen2.5-1.5B**. What sets it apart is the rigour: he validated every result with **multi-seed robustness sweeps** and explained model decisions with **LIME**. It shows he can design careful experiments and draw conclusions you can trust, a skill that carries straight into any data science team.",
   },
   {
     q: ["Does he know NLP?", "Natural language processing skills", "Transformers experience", "Text classification experience", "Hugging Face"],
-    a: "NLP is Meet's strongest research area. He fine-tuned **XLM-RoBERTa** with Hugging Face Transformers and PyTorch for cross-lingual classification, compared it with LLM in-context learning, and explained predictions with **LIME**. He also built a phishing email classifier and a TF-IDF recommender (Cinemate).",
+    a: "NLP is one of Meet’s core strengths. In his thesis he fine-tuned **Hugging Face transformer models** for cross-lingual text classification on messy, code-mixed data, compared them with LLM prompting, and used **LIME** to explain what the models were actually learning. He also built **CINEMATE**, a TF-IDF movie recommender deployed on AWS, and a phishing email classifier. Whether it’s classic NLP or modern LLMs, he knows how to choose the right tool and prove it works.",
   },
   {
     q: ["What machine learning experience does he have?", "ML skills", "Which models has he built?", "Predictive modelling experience", "Regression and classification"],
-    a: "Meet has built regression, classification, time-series and deep learning models: **house price prediction** (linear regression, decision tree, random forest and SVR, tuned with GridSearchCV and cross-validation), **Walmart sales forecasting**, **Titanic survival** classification, a **rice image classifier**, and transformer fine-tuning in his thesis. He works mainly with scikit-learn, PyTorch and TensorFlow/Keras.",
+    a: "Meet has hands-on experience across the machine learning toolkit: **transformer fine-tuning** in his thesis, a **content-based recommender** deployed on AWS EC2, **sales forecasting** for Walmart, and **regression and classification** projects with careful model comparison and cross-validation. He works mainly in **Python with scikit-learn** and Hugging Face, and he pays close attention to evaluation: robustness testing and interpretability are part of how he works, not an afterthought. That means models you can actually rely on in production.",
   },
   {
     q: ["What is his tech stack?", "Technical skills", "Which tools does he use?", "Programming languages", "Does he know Python and SQL?"],
-    a: "Core stack: **Python, SQL, pandas, NumPy, scikit-learn, PyTorch, TensorFlow, Hugging Face**. Analytics: **Power BI, Tableau, Excel**. Enterprise and automation: **Copilot Studio, Power Automate, Power Apps, SAP Signavio, Azure DevOps**. Apps and deployment: **Streamlit, AWS EC2, Git**. He also has a web background in JavaScript, PHP, Java and C/C++.",
+    a: "Meet’s toolkit spans the full path from data to AI product. For **Generative AI and agents**: Microsoft Copilot Studio, Hugging Face Transformers, Qwen2.5 and LLM prompting and evaluation. For **machine learning**: Python, scikit-learn, deep learning, NLP, LIME and robustness testing. For **data engineering and cloud**: SQL and T-SQL, relational data modelling, data quality and governance, Microsoft Azure (Azure SQL Server), AWS EC2 and Docker. And for **business processes and enterprise apps**: SAP Signavio, Power Apps, Power Automate, Power BI and Excel. Most importantly, he uses these tools daily in a real enterprise, not just in coursework.",
   },
   {
-    q: ["Data analysis experience", "Business intelligence skills", "Power BI or Tableau?", "Can he build dashboards?", "Data analyst role"],
-    a: "Yes. Meet has done exploratory analyses (Netflix catalogue, gym member data), holds a **diploma in data analytics**, and uses **Power BI, Tableau and Excel**. At Siemens Healthineers he evaluated Power BI among other tools for visualising a complex system landscape. His IBM and FutureLearn data analytics certificates are verifiable on the portfolio.",
+    q: ["Data analysis experience", "Business intelligence skills", "Power BI or Tableau?", "Can he build dashboards?", "Data analyst role", "Reporting experience"],
+    a: "Turning data into decisions is a big part of what Meet does at Siemens Healthineers. His **Ticket-to-Talk** agent produces a **filterable KPI dashboard and an incident summary** from raw ticket exports, then packages the results as **management-ready PowerPoint decks**. He also designs the data underneath: a **13-table relational model in Azure SQL** with data-quality rules in T-SQL. Add Power BI, Excel and a diploma in data analytics, and he’s well equipped for analyst and BI roles that need both clean data and clear storytelling.",
   },
   {
-    q: ["Can he deploy models?", "Cloud experience", "MLOps experience", "AWS or Azure experience", "Has he shipped anything to production?"],
-    a: "Meet deployed his **Cinemate** recommender as a Streamlit app on **AWS EC2**, and at Siemens Healthineers he worked within the **Azure DevOps** lifecycle. From his Open Weaver internship he also has experience deploying a full e-commerce site with automated SMTP emails and payment integration.",
+    q: ["Can he deploy models?", "Cloud experience", "MLOps experience", "AWS or Azure experience", "Has he shipped anything to production?", "Data engineering experience"],
+    a: "Yes, Meet ships real things. At Siemens Healthineers he builds AI agents and the Interface Catalogue for his department on **Microsoft Azure (Azure SQL Server)** with Power Automate pipelines for bulk data ingestion. He keeps business logic in the **governed data layer** with T-SQL stored procedures, a sign of good engineering judgement. Outside work he deployed his CINEMATE recommender on **AWS EC2**, and he’s comfortable with Docker. He understands that a model only creates value once it’s reliably in people’s hands.",
   },
   {
     q: ["What is his education?", "Which degrees does he have?", "Where did he study?", "University", "Bachelor degree"],
-    a: "- **MSc Data Science, AI and Digital Business**, Gisma University of Applied Sciences, Potsdam (Sep 2024 to Sep 2026)\n- **Bachelor of Computer Applications**, IMS Ghaziabad (2021 to 2024), **grade A+**, with a diploma in data analytics and a Best Performer of the Batch award",
+    a: "Meet is completing an **M.Sc. in Data Science (AI and Digital Business, Computer Science)** at Gisma University of Applied Sciences (Sep 2024 to 2026), with a thesis on cross-lingual NLP and LLMs. Before that he earned a **Bachelor of Computer Applications** at IMS Ghaziabad (2021 to 2024) **with an A+ grade**, a diploma in data analytics and a Best Performer of the Batch award, plus winter training in full-stack development at **IIT Kanpur**. A strong technical foundation, now applied every day at Siemens Healthineers.",
   },
   {
     q: ["Does he speak German?", "Language skills", "Sprachkenntnisse", "Spricht er Deutsch?", "English level"],
-    a: "Meet speaks **English** at a professional working level, **Hindi** natively, and **German at A2**, which he is actively improving while working at Siemens Healthineers in Germany. For roles that require fluent German, it is best to discuss this with him directly.",
+    a: "Meet works **fully in English** at a professional level, which he does every day at Siemens Healthineers, and Hindi is his native language. His **German is at a limited working level (A2)**, and he’s actively improving it while living and working in Germany. He’s a great fit for international teams and English-speaking roles; if a role needs fluent German, it’s worth a quick chat with him about his progress and timeline.",
   },
   {
     q: ["Where is he located?", "Is he open to relocation?", "Which cities?", "Remote or hybrid?", "Work location preference"],
-    a: "Meet is based in **Berlin** and open to **on-site or hybrid** roles in **Berlin, Erlangen, Munich, Frankfurt am Main and Nuremberg**.",
+    a: "Meet is **based in Erlangen** and already works on-site at Siemens Healthineers there. He’s open to **on-site or hybrid roles in Erlangen, Nuremberg, Munich, Berlin and Frankfurt am Main**, so the whole Franconia and Munich region is an easy fit, and he’s flexible for the right opportunity in the other cities.",
   },
   {
     q: ["When can he start?", "Availability", "Notice period", "Is he available now?", "Start date"],
-    a: "Meet is **actively open to data and AI roles**. His MSc runs until September 2026 and he currently works as a working student at Siemens Healthineers. For an exact start date or notice period, please email him at **meetgoel12345@gmail.com**.",
+    a: "Meet is **actively looking for his next role** in AI, data science or data analytics. He is completing his M.Sc. in 2026 and currently works as a working student at Siemens Healthineers. For an exact start date or notice period, the quickest way is to email him at **meetgoel12345@gmail.com**. He’s happy to set up a call.",
   },
   {
     q: ["Does he need a visa?", "Work permit", "Visa sponsorship", "Is he allowed to work in Germany?"],
-    a: "I don't have details on Meet's visa or work-permit status. He already works in Germany at Siemens Healthineers; for specifics please ask him directly at **meetgoel12345@gmail.com**.",
+    a: "I don’t have the details of Meet’s visa or work-permit status, so I don’t want to guess. What I can say is that he already lives and works in Germany at Siemens Healthineers. For specifics, please ask him directly at **meetgoel12345@gmail.com**. He’ll give you a clear answer.",
   },
   {
     q: ["What are his salary expectations?", "Salary", "Compensation", "Expected pay"],
-    a: "I don't have Meet's salary expectations. He's happy to discuss this directly: **meetgoel12345@gmail.com**.",
+    a: "That’s best discussed with Meet directly, since it depends on the role and responsibilities. He’s open and easy to talk to, so just drop him a line at **meetgoel12345@gmail.com**.",
   },
   {
-    q: ["What motivates him?", "Career goals", "Why data science?", "What kind of role is he looking for?", "Motivation"],
-    a: "Meet moved from building web apps to data science because he wants to build the intelligence behind products, not just the interface. He's motivated by **messy, real-world data where results matter**, as at Siemens Healthineers, and by doing it rigorously, as his thesis showed. He's looking for a data scientist, ML engineer or AI automation role where he can ship models and keep learning.",
+    q: ["What motivates him?", "Career goals", "Why data science?", "What kind of role is he looking for?", "Motivation", "Why AI?"],
+    a: "Meet is motivated by **seeing AI make someone’s day easier**. At Siemens Healthineers he watched raw incident exports turn into dashboards and management decks with a single agent, and that’s the kind of impact he wants to keep creating. He started in web development, moved into data science to build the intelligence behind products, and now combines both in GenAI. He’s looking for a role as an **AI consultant, data scientist, AI engineer or data analyst** where he can work close to the business, build solutions that people actually use, and keep growing fast.",
   },
   {
-    q: ["Soft skills", "Is he a team player?", "Leadership experience", "Communication skills", "Teamwork"],
-    a: "Meet has led and coordinated people since university: **President of the IT Club**, class representative, and coordinator for Hack-A-Thon 2K24 and INVENT 2K23. In Germany he volunteered as event coordinator for a career fair, and at Siemens Healthineers he worked across several departments and with data experts to map a complex IT landscape.",
+    q: ["Soft skills", "Is he a team player?", "Leadership experience", "Communication skills", "Teamwork", "Can he work with stakeholders?", "Is he good at working with business people?", "Can he work with non-technical colleagues?", "Does he communicate well with business teams?", "Is he client-facing?"],
+    a: "Very much so. Meet’s day-to-day work at Siemens Healthineers is about **translating business needs into technical solutions**: he gathers process requirements from colleagues and turns them into working AI agents and data apps. He also brings an **international background across India and Germany**. At university he was **President of the IT Club**, class representative and a coordinator for hackathons, and in Germany he volunteered as an event coordinator for a career fair. He’s the kind of colleague who communicates clearly, takes ownership and makes the team around him better.",
   },
   {
     q: ["What are his weaknesses?", "Areas for improvement", "What is he still learning?"],
-    a: "Honestly: his **German is at A2**, and he's actively improving it. He is also early in his career, which he balances with fast learning: he went from his first corporate internship to a working student role at Siemens Healthineers, and he backs his skills with verifiable certifications.",
+    a: "Honestly, the main one is **German**: he’s at a limited working level and actively improving it while working in Germany. He’s also early in his career, but he makes up for it with **how fast he delivers**. Within months at Siemens Healthineers he went from his first corporate internship to building AI agents and data applications for his department. He learns quickly and isn’t afraid to say what he doesn’t know yet.",
   },
   {
     q: ["Which certifications does he have?", "Certificates", "Courses completed", "IBM certification"],
-    a: "Verified credentials include **IBM Machine Learning with Python (Level 1)**, **IBM Data Science Foundations (Level 2)**, IBM Data Science Methodologies and Tools, and **Microsoft Future Ready: Data Science Research Methods Using Python**, plus FutureLearn certificates in data analytics with Python and Excel. Each has a verify link in the Certifications section.",
+    a: "Meet backs his skills with **verifiable certifications**: **IBM Machine Learning with Python** and **IBM Data Science Methodologies and Foundations**, plus FutureLearn certificates in **Data Analytics with Python**, Excel and **Microsoft Future Ready Data Science Research**. You’ll find each one with a “Verify” link in the Certifications section, so you can check them in one click.",
   },
   {
     q: ["What projects has he done?", "Best project", "Portfolio projects", "Show me his work", "GitHub projects"],
-    a: "Highlights:\n- **Siemens Healthineers**: OTC ecosystem map and Copilot AI agents\n- **Master's thesis**: cross-lingual NLP with XLM-R and Qwen2.5\n- **Cinemate**: TF-IDF movie recommender on AWS EC2\n- **ML projects**: house prices, Walmart sales, Titanic, phishing emails\n- **J.A.R.V.I.S.**: macOS voice assistant with face recognition\nAll code is on github.com/meetgoel.",
+    a: "His standout work is from Siemens Healthineers: the **Ticket-to-Talk** AI agent (incident data to KPI dashboards and PowerPoint reports) and the **Interface Catalogue** (a 13-table Azure SQL app with governed business rules). Beyond work, there’s his **master’s thesis** benchmarking fine-tuned transformers against an open-weight LLM, **CINEMATE**, an NLP movie recommender deployed on AWS, plus forecasting and classification projects. Scroll to the Projects section for previews, or visit **github.com/meetgoel** for the code.",
   },
   {
-    q: ["Could he build a prediction model for us?", "Can he do churn prediction?", "Could he help our team with forecasting?", "Can he build a recommendation system?", "Could he solve our business problem with machine learning?"],
-    a: "Very likely, and he has done the closest building blocks: **classification** (Titanic survival, phishing emails), **time-series forecasting** (Walmart weekly sales with holidays and economic indicators), **regression with model comparison and GridSearchCV** (house prices) and a **recommender** deployed on AWS (Cinemate). At Siemens Healthineers he also learned to work with business stakeholders on real enterprise data. He'd be glad to talk through your use case: **meetgoel12345@gmail.com**.",
+    q: ["Could he build a prediction model for us?", "Can he do churn prediction?", "Could he help our team with forecasting?", "Can he build a recommendation system?", "Could he solve our business problem with machine learning?", "Could he build an AI agent for us?"],
+    a: "Very likely, and he has already built the closest building blocks. He has delivered **AI agents that automate reporting** at Siemens Healthineers, a **recommender system** deployed on AWS, **forecasting and classification models**, and **governed data models in Azure SQL**. Just as important, he’s used to sitting with business users, understanding the real problem and turning it into a working solution. The best next step is a short conversation about your use case: **meetgoel12345@gmail.com**.",
   },
   {
     q: ["Tell me about the Cinemate project", "Movie recommender", "Recommendation system project", "Streamlit app"],
-    a: "**Cinemate** (Oct to Nov 2025, Gisma) is a content-based movie recommender: an NLP pipeline on the TMDB dataset using **TF-IDF vectors and a similarity matrix**, a **Streamlit** interface with custom CSS, a GPT-4 chat assistant, and deployment on **AWS EC2**. Code: github.com/meetgoel/Business-Project-in-Big-Data-AI.",
+    a: "**CINEMATE** is a movie recommender Meet built end to end in Oct to Nov 2025. It uses **TF-IDF vectorisation and a similarity matrix** on the TMDB dataset to suggest films with similar content, and he **deployed it on AWS EC2** with a custom web interface. It’s a nice example of him taking an idea from data to a live, usable product. The code is on github.com/meetgoel/Business-Project-in-Big-Data-AI.",
   },
   {
     q: ["Tell me about JARVIS", "Voice assistant project", "Bachelor final project", "Computer vision project", "Face recognition"],
-    a: "**J.A.R.V.I.S.** was Meet's bachelor's final project: a macOS voice assistant with **face recognition** for secure start-up, **speech recognition**, Hugging Face chat and image generation, a weather API and system automation. Built in Python (OpenCV, face_recognition, Eel) with an HTML, CSS and JavaScript front end.",
-  },
-  {
-    q: ["What are his hobbies?", "What does he do outside work?", "Personal interests", "Tell me something personal about him"],
-    a: "Outside work Meet plays musical instruments, draws, and enjoys computer and board games. His motto: **born to express, not to impress**.",
+    a: "**J.A.R.V.I.S.** was Meet’s bachelor’s final project: a macOS voice assistant with **face recognition** for secure start-up, **speech recognition**, Hugging Face chat and image generation, a weather API and system automation. He built it in Python (OpenCV, face_recognition) with a web front end. It shows his curiosity and his drive to build complete, working AI products, even before his master’s.",
   },
   {
     q: ["How does he approach a new dataset?", "How would he handle messy data?", "What is his way of working?", "How does he work on a data science problem?", "Data cleaning experience"],
-    a: "Meet starts with the data, not the model: **cleaning and exploratory analysis** first (his analytics diploma and Google's \"Process Data from Dirty to Clean\" course), then a **simple baseline** before anything complex. His thesis shows the rigour he brings: he compared models across **three random seeds**, used **Macro-F1 instead of accuracy** because the data was imbalanced, and explained predictions with **LIME**. At Siemens Healthineers he also clarified requirements with business and data experts before building.",
+    a: "Meet starts with the **business question and the data**, not the model. He cleans and explores the data first and puts **business rules and quality checks where they belong**: at Siemens Healthineers he enforces them in T-SQL so every app built on top can trust the data. Then he builds the simplest thing that works and tests it honestly; in his thesis he validated results across **multiple random seeds** and used **LIME** to explain model decisions. The result is work that stakeholders can understand and rely on.",
+  },
+  {
+    q: ["What are his hobbies?", "What does he do outside work?", "Personal interests", "Tell me something personal about him"],
+    a: "Outside work Meet plays musical instruments, draws, and enjoys computer and board games. His personal motto sums him up nicely: **born to express, not to impress**.",
   },
   {
     q: ["How can I contact him?", "Email", "Can I get his CV?", "Schedule an interview", "LinkedIn profile"],
-    a: "Email **meetgoel12345@gmail.com**, connect on LinkedIn at linkedin.com/in/meet-goel, or download his CV from the button at the top of the page. He's happy to set up a call.",
+    a: "The easiest way is email: **meetgoel12345@gmail.com**. You can also connect on LinkedIn at **linkedin.com/in/meet-goel**, or download his latest CV with the “Download CV” button at the top of this page. He’d be glad to set up a call and walk you through his work.",
   },
   {
     q: ["Hi", "Hello", "What can you do?", "Help", "Hallo"],
-    a: "Hi! I can answer questions about Meet's **experience, skills, thesis, projects, languages and availability**. Try one of the suggestions below, or ask your own question.",
+    a: "Hi there, and thanks for stopping by! I can tell you about Meet’s **experience at Siemens Healthineers, his AI agents, skills, thesis, projects, languages and availability**. Pick one of the questions below or ask me anything.",
   },
 ];
-
 /* ---------- DOM ---------- */
 const $ = (s) => document.querySelector(s);
 const fab = $("#chat-fab");
