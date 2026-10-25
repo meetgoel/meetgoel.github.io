@@ -15,7 +15,7 @@
 
 - 📫 How to reach me **meetgoel12345@gmail.com**
 
-- 📄 Know about my experiences [https://meetgoel.github.io/download/meet_goel_cv.pdf](https://meetgoel.github.io/download/meet%20resume.pdf)
+- 📄 Know about my experiences [https://meetgoel.github.io/download/meet_goel_cv.pdf](https://meetgoel.github.io/download/meet_goel_cv.pdf)
 
 - ⚡ Fun fact **Born to Express, Not to Impress**
 
