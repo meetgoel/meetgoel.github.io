@@ -158,6 +158,23 @@ function initMenu() {
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && menu.classList.contains("open")) setOpen(false); });
 }
 
+/* ---------- Floating nav: expand on scroll, highlight the section in view ---------- */
+function initNav() {
+  const bar = document.querySelector(".topbar");
+  const links = [...document.querySelectorAll(".pill-nav a")];
+  const map = new Map(links.map((a) => [a.getAttribute("href").slice(1), a]));
+  const onScroll = () => bar.classList.toggle("scrolled", window.scrollY > window.innerHeight * 0.6);
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      links.forEach((a) => a.classList.toggle("active", a === map.get(e.target.id)));
+    });
+  }, { rootMargin: "-45% 0px -50% 0px" });
+  map.forEach((_, id) => { const el = document.getElementById(id); if (el) io.observe(el); });
+}
+
 /* ---------- Tabs ---------- */
 function bindTabs(group, onChange) {
   const tabs = group.querySelectorAll(".tab");
@@ -303,6 +320,7 @@ function initCopy() {
 splitMega();
 initLenis();
 initMenu();
+initNav();
 initReveal();
 initScramble();
 initScrollFx();

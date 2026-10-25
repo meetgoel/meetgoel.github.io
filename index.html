@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@600&family=JetBrains+Mono:wght@500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20261025d">
+  <link rel="stylesheet" href="css/style.css?v=20261025h">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -73,6 +73,9 @@
         <img src="assets/thumbs/avatar.webp" alt="" width="36" height="36">
         <span>Meet</span>
       </a>
+      <nav class="pill-nav" aria-label="Sections">
+        <a href="#about">About</a><a href="#experience">Experience</a><a href="#education">Education</a><a href="#skills">Skills</a><a href="#projects">Projects</a><a href="#thesis">Thesis</a><a href="#certifications">Certificates</a>
+      </nav>
       <a class="btn btn-dark btn-shine" href="#contact">Let’s Connect</a>
     </div>
     <button class="burger" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
@@ -87,6 +90,7 @@
         <li><a href="#about">About me</a></li>
         <li><a href="#experience">Experience</a></li>
         <li><a href="#education">Education</a></li>
+        <li><a href="#skills">Skills</a></li>
         <li><a href="#projects">Projects</a></li>
         <li><a href="#thesis">Thesis</a></li>
         <li><a href="#certifications">Certifications</a></li>
@@ -280,6 +284,40 @@
       </div>
     </section>
 
+    <!-- Skills -->
+    <section class="sec" id="skills" data-glow="green">
+      <header class="sec-head reveal">
+        <p class="kicker k-green fx-scramble">Skills</p>
+        <h2>Tools I Build With.</h2>
+        <p>The languages, frameworks and platforms I use in my projects and at Siemens Healthineers.</p>
+      </header>
+      <div class="toolbox reveal">
+        <ul class="tools" aria-label="Tools I use">
+          <li><span class="ti" style="--i:url(/assets/icons/python.svg)"></span>Python</li>
+          <li><span class="ti" style="--i:url(/assets/icons/pytorch.svg)"></span>PyTorch</li>
+          <li><span class="ti" style="--i:url(/assets/icons/tensorflow.svg)"></span>TensorFlow</li>
+          <li><span class="ti" style="--i:url(/assets/icons/scikitlearn.svg)"></span>scikit-learn</li>
+          <li><span class="ti" style="--i:url(/assets/icons/huggingface.svg)"></span>Hugging Face</li>
+          <li><span class="ti" style="--i:url(/assets/icons/pandas.svg)"></span>pandas</li>
+          <li><span class="ti" style="--i:url(/assets/icons/mysql.svg)"></span>SQL</li>
+          <li><span class="ti" style="--i:url(/assets/icons/jupyter.svg)"></span>Jupyter</li>
+          <li><span class="ti" style="--i:url(/assets/icons/streamlit.svg)"></span>Streamlit</li>
+          <li><span class="ti" style="--i:url(/assets/icons/sap.svg)"></span>SAP Signavio</li>
+          <li><span class="ti" style="--i:url(/assets/icons/azuredevops.svg)"></span>Azure DevOps</li>
+          <li><span class="ti" style="--i:url(/assets/icons/tableau.svg)"></span>Tableau</li>
+          <li><span class="ti" style="--i:url(/assets/icons/amazonwebservices.svg)"></span>AWS EC2</li>
+          <li><span class="ti" style="--i:url(/assets/icons/openai.svg)"></span>OpenAI API</li>
+          <li><span class="ti" style="--i:url(/assets/icons/opencv.svg)"></span>OpenCV</li>
+          <li><span class="ti" style="--i:url(/assets/icons/git.svg)"></span>Git</li>
+        </ul>
+        <div class="globe-card">
+          <canvas id="globe" aria-hidden="true"></canvas>
+          <h3>Based in Germany</h3>
+          <p>On-site or hybrid in Berlin, Erlangen, Munich, Frankfurt and Nuremberg. Also skilled in Copilot Studio, Power Automate, Power Apps and Power BI.</p>
+        </div>
+      </div>
+    </section>
+
     <!-- Projects -->
     <section class="sec" id="projects" data-glow="blue">
       <header class="sec-head reveal">
@@ -440,32 +478,6 @@
         </div>
 
 
-      <!-- Toolbox grid with globe card -->
-      <div class="toolbox reveal">
-        <ul class="tools" aria-label="Tools I use">
-          <li><span class="ti" style="--i:url(/assets/icons/python.svg)"></span>Python</li>
-          <li><span class="ti" style="--i:url(/assets/icons/pytorch.svg)"></span>PyTorch</li>
-          <li><span class="ti" style="--i:url(/assets/icons/tensorflow.svg)"></span>TensorFlow</li>
-          <li><span class="ti" style="--i:url(/assets/icons/scikitlearn.svg)"></span>scikit-learn</li>
-          <li><span class="ti" style="--i:url(/assets/icons/huggingface.svg)"></span>Hugging Face</li>
-          <li><span class="ti" style="--i:url(/assets/icons/pandas.svg)"></span>pandas</li>
-          <li><span class="ti" style="--i:url(/assets/icons/mysql.svg)"></span>SQL</li>
-          <li><span class="ti" style="--i:url(/assets/icons/jupyter.svg)"></span>Jupyter</li>
-          <li><span class="ti" style="--i:url(/assets/icons/streamlit.svg)"></span>Streamlit</li>
-          <li><span class="ti" style="--i:url(/assets/icons/sap.svg)"></span>SAP Signavio</li>
-          <li><span class="ti" style="--i:url(/assets/icons/azuredevops.svg)"></span>Azure DevOps</li>
-          <li><span class="ti" style="--i:url(/assets/icons/tableau.svg)"></span>Tableau</li>
-          <li><span class="ti" style="--i:url(/assets/icons/amazonwebservices.svg)"></span>AWS EC2</li>
-          <li><span class="ti" style="--i:url(/assets/icons/openai.svg)"></span>OpenAI API</li>
-          <li><span class="ti" style="--i:url(/assets/icons/opencv.svg)"></span>OpenCV</li>
-          <li><span class="ti" style="--i:url(/assets/icons/git.svg)"></span>Git</li>
-        </ul>
-        <div class="globe-card">
-          <canvas id="globe" aria-hidden="true"></canvas>
-          <h3>Based in Germany</h3>
-          <p>On-site or hybrid in Berlin, Erlangen, Munich, Frankfurt and Nuremberg. Also skilled in Copilot Studio, Power Automate, Power Apps and Power BI.</p>
-        </div>
-      </div>
     </section>
 
     <!-- Thesis -->
@@ -577,7 +589,7 @@
   <footer class="footer">
     <div class="footer-grid">
       <a class="f-mark" href="#home" aria-label="Back to top">MG</a>
-      <div><h4>Navigation</h4><a href="#home">Home</a><a href="#about">About me</a><a href="#experience">Experience</a><a href="#education">Education</a></div>
+      <div><h4>Navigation</h4><a href="#home">Home</a><a href="#about">About me</a><a href="#experience">Experience</a><a href="#education">Education</a><a href="#skills">Skills</a></div>
       <div><h4>Work</h4><a href="#projects">Projects</a><a href="#thesis">Thesis</a><a href="#certifications">Certifications</a></div>
       <div><h4>Contact</h4><a href="mailto:meetgoel12345@gmail.com">meetgoel12345@gmail.com</a><a href="https://meetgoel.github.io/">meetgoel.github.io</a>
         <span class="f-social"><a href="https://www.linkedin.com/in/meet-goel/" aria-label="LinkedIn"><svg class="ico"><use href="#i-linkedin"/></svg></a><a href="https://github.com/meetgoel" aria-label="GitHub"><svg class="ico"><use href="#i-github"/></svg></a></span>
@@ -626,8 +638,8 @@
   </section>
 
   <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
-  <script src="js/main.js" defer></script>
-  <script type="module" src="js/scene.js?v=20261025d"></script>
+  <script src="js/main.js?v=20261025h" defer></script>
+  <script type="module" src="js/scene.js?v=20261025h"></script>
   <script type="module" src="js/chat.js"></script>
 </body>
 </html>
