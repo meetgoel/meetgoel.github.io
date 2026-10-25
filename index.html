@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@600&family=JetBrains+Mono:wght@500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20261025j">
+  <link rel="stylesheet" href="css/style.css?v=20261025k">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -181,20 +181,23 @@
           <div class="role">
             <div class="role-head"><h4>Working Student, Service Management and Operations</h4><span>May 2026 to present</span></div>
             <ul>
-              <li>Support service operations with automation and AI tools: Microsoft Copilot Studio, Power Automate and Power Apps.</li>
-              <li>Work with SAP Solution Manager and SharePoint across operational processes and service delivery.</li>
+              <li>Built <b>Ticket-to-Talk</b>, an AI agent in Microsoft Copilot Studio that analyses incident exports from the SHARP ticketing system and generates a filterable dashboard with KPI metrics and an incident summary.</li>
+              <li>Extended the agent to produce presentation-ready PowerPoint decks in the team’s custom template, turning raw incident data into management reporting.</li>
+              <li>Built the <b>Interface Catalogue</b>, a Power Apps application on a 13-table relational data model in Azure SQL Server with bulk Excel ingestion via Power Automate, giving Service Management Operations one source of truth for interface metadata across enterprise systems.</li>
+              <li>Implemented business rules and data quality controls in T-SQL stored procedures (existence checks, auto-creation logic, global search), keeping logic in the governed data layer rather than the front end.</li>
+              <li>Automated communication documentation with a Copilot Studio agent and Power Automate as part of departmental AI enablement.</li>
             </ul>
-            <div class="chips"><span>Copilot Studio</span><span>Power Automate</span><span>Power Apps</span><span>SAP SolMan</span><span>SharePoint</span></div>
+            <div class="chips"><span>Copilot Studio</span><span>Azure SQL Server</span><span>T-SQL</span><span>Power Apps</span><span>Power Automate</span><span>PowerPoint</span></div>
           </div>
           <div class="role">
             <div class="role-head"><h4>Intern, IT Order-to-Cash</h4><span>Feb 2026 to May 2026</span></div>
             <ul>
-              <li>Visualised the Order-to-Cash IT ecosystem: more than 50 satellite systems connected to the ERP, modelled as nodes and directional flows, working with several departments and data experts.</li>
-              <li>Evaluated Power BI, LeanIX, SAP Signavio and Power Apps for the visualisation and chose SAP Signavio as the best fit.</li>
-              <li>Built AI agents with Microsoft Copilot that analyse complex documents and return insights in a structured format.</li>
-              <li>Worked within the Azure DevOps lifecycle and attended SAP AI workshops on Joule, BTP, AI Core, AI Launchpad, SAP Build and MCP servers.</li>
+              <li>Designed and deployed multiple Generative AI agents in Microsoft Copilot Studio, translating department process requirements into working agent solutions, including agents that turn complex documents into structured insights.</li>
+              <li>Modelled the IT Order-to-Cash interface architecture in SAP Signavio, mapping how business processes flow across more than 50 integrated systems around the ERP.</li>
+              <li>Evaluated Power BI, LeanIX, SAP Signavio and Power Apps with business and data experts before choosing SAP Signavio as the best fit.</li>
+              <li>Completed SAP AI workshops on Joule agents, SAP BTP AI Core, AI Launchpad and SAP Build, and worked within the Azure DevOps lifecycle.</li>
             </ul>
-            <div class="chips"><span>SAP Signavio</span><span>Microsoft Copilot</span><span>Azure DevOps</span><span>SAP Joule</span><span>Power BI</span><span>LeanIX</span></div>
+            <div class="chips"><span>Copilot Studio</span><span>Generative AI</span><span>SAP Signavio</span><span>Azure DevOps</span><span>SAP BTP</span></div>
           </div>
         </div>
       </article>
@@ -339,6 +342,32 @@
         <button class="tab" aria-pressed="false" data-filter="web">Web</button>
       </div>
         <div class="cards" id="project-grid">
+          <article class="card tilt reveal spot" data-cat="industry apps">
+            <p class="c-year">2026</p>
+            <h3>Ticket-to-Talk: AI agent for incident reporting, Siemens Healthineers</h3>
+            <div class="shot mock-t2t" aria-hidden="true">
+              <div class="t2t-rows"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              <div class="ma-arrow"></div>
+              <div class="t2t-dash"><div class="t2t-kpis"><b></b><b></b><b></b></div><div class="t2t-bars"><i style="--h:40%"></i><i style="--h:75%"></i><i style="--h:55%"></i><i style="--h:90%"></i><i style="--h:65%"></i></div><div class="t2t-slide"><span>PPTX</span></div></div>
+            </div>
+            <p class="c-desc">Copilot Studio agent that turns incident exports from the SHARP ticketing system into a filterable KPI dashboard, an incident summary and presentation-ready PowerPoint decks in the team’s template.</p>
+            <p class="c-cat">Industry work · Generative AI</p>
+            <div class="c-foot"><a href="#experience">Read in experience</a><span class="c-ico"><svg class="ico"><use href="#i-brief"/></svg></span></div>
+          </article>
+
+          <article class="card tilt reveal spot" data-cat="industry">
+            <p class="c-year">2026</p>
+            <h3>Interface Catalogue: governed data app on Azure SQL</h3>
+            <div class="shot mock-db" aria-hidden="true">
+              <svg viewBox="0 0 320 200"><g class="links"><path d="M70 50 H160 V100"/><path d="M250 50 H160"/><path d="M160 100 V150 H70"/><path d="M160 150 H250"/><path d="M70 100 H160"/><path d="M250 100 H160"/></g>
+                <g class="tbl"><rect x="30" y="30" width="80" height="40" rx="5"/><rect x="210" y="30" width="80" height="40" rx="5"/><rect x="30" y="80" width="80" height="40" rx="5"/><rect class="core" x="120" y="80" width="80" height="40" rx="5"/><rect x="210" y="80" width="80" height="40" rx="5"/><rect x="30" y="130" width="80" height="40" rx="5"/><rect x="210" y="130" width="80" height="40" rx="5"/></g>
+                <text x="160" y="104">INTERFACE</text></svg>
+            </div>
+            <p class="c-desc">Power Apps application on a 13-table Azure SQL data model with bulk Excel ingestion and T-SQL business rules: one source of truth for interface metadata across enterprise systems.</p>
+            <p class="c-cat">Industry work · Data engineering</p>
+            <div class="c-foot"><a href="#experience">Read in experience</a><span class="c-ico"><svg class="ico"><use href="#i-brief"/></svg></span></div>
+          </article>
+
           <article class="card tilt reveal spot" data-cat="nlp">
             <p class="c-year">2026</p>
             <h3>Master’s thesis: offensive language detection</h3>
@@ -354,20 +383,7 @@
             <div class="shot mock-graph" aria-hidden="true">
               <svg viewBox="0 0 320 200"><g class="edges"><path d="M160 100 L60 40"/><path d="M160 100 L48 110"/><path d="M160 100 L80 170"/><path d="M160 100 L160 24"/><path d="M160 100 L262 36"/><path d="M160 100 L280 104"/><path d="M160 100 L250 172"/><path d="M160 100 L160 182"/><path d="M60 40 L20 70"/><path d="M262 36 L300 60"/><path d="M80 170 L30 160"/><path d="M250 172 L300 150"/><path d="M160 24 L110 14"/><path d="M160 182 L210 192"/></g><g class="nodes"><circle cx="60" cy="40" r="7"/><circle cx="48" cy="110" r="6"/><circle cx="80" cy="170" r="7"/><circle cx="160" cy="24" r="6"/><circle cx="262" cy="36" r="7"/><circle cx="280" cy="104" r="6"/><circle cx="250" cy="172" r="7"/><circle cx="160" cy="182" r="6"/><circle cx="20" cy="70" r="4"/><circle cx="300" cy="60" r="4"/><circle cx="30" cy="160" r="4"/><circle cx="300" cy="150" r="4"/><circle cx="110" cy="14" r="4"/><circle cx="210" cy="192" r="4"/></g><circle class="hub" cx="160" cy="100" r="20"/><text x="160" y="104">ERP</text></svg>
             </div>
-            <p class="c-desc">Mapped 50+ satellite systems around the ERP as nodes and directional flows in SAP Signavio, after evaluating Power BI, LeanIX and Power Apps.</p>
-            <p class="c-cat">Industry work</p>
-            <div class="c-foot"><a href="#experience">Read in experience</a><span class="c-ico"><svg class="ico"><use href="#i-brief"/></svg></span></div>
-          </article>
-
-          <article class="card tilt reveal spot" data-cat="industry apps">
-            <p class="c-year">2026</p>
-            <h3>Copilot AI agents for document analysis</h3>
-            <div class="shot mock-agent" aria-hidden="true">
-              <div class="ma-doc"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-              <div class="ma-arrow"></div>
-              <div class="ma-out"><b></b><i></i><b></b><i></i><b></b><i></i></div>
-            </div>
-            <p class="c-desc">AI agents built with Microsoft Copilot at Siemens Healthineers that read complex business documents and return the key insights in a structured format.</p>
+            <p class="c-desc">Modelled the Order-to-Cash interface architecture in SAP Signavio: 50+ integrated systems around the ERP as nodes and directional flows, after evaluating Power BI, LeanIX and Power Apps.</p>
             <p class="c-cat">Industry work</p>
             <div class="c-foot"><a href="#experience">Read in experience</a><span class="c-ico"><svg class="ico"><use href="#i-brief"/></svg></span></div>
           </article>
@@ -638,8 +654,8 @@
   </section>
 
   <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
-  <script src="js/main.js?v=20261025j" defer></script>
-  <script type="module" src="js/scene.js?v=20261025j"></script>
-  <script type="module" src="js/chat.js?v=20261025j"></script>
+  <script src="js/main.js?v=20261025k" defer></script>
+  <script type="module" src="js/scene.js?v=20261025k"></script>
+  <script type="module" src="js/chat.js?v=20261025k"></script>
 </body>
 </html>
