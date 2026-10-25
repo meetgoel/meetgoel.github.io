@@ -1,4 +1,4 @@
-// Three.js scenes: chrome monogram (hero), point-cloud globe (skills), liquid blob with cursor droplet (contact).
+// Three.js scenes: chrome monogram (hero), point-cloud globe (skills), shape-blend liquid that follows the cursor (contact).
 import * as THREE from "three";
 import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
@@ -148,84 +148,115 @@ function globe() {
   run(canvas, renderer, scene, camera, (t) => { globeGroup.rotation.y = t * 0.18; });
 }
 
-/* ---------- Contact: liquid black blob with a cursor-following droplet ---------- */
-// A large glossy black drop sits in the middle; a small drop follows the cursor and melts into it
-// when close (metaballs), a third tiny drop floats on its own. Lit only by a 2x2 "window" above,
-// so the black stays deep with crisp pane highlights and no bright rims.
-function windowEnv(renderer) {
-  const env = new THREE.Scene();
-  env.background = new THREE.Color(0x000000);
-  const pane = (x, y) => {
-    const m = new THREE.Mesh(new THREE.PlaneGeometry(2.3, 2.3), new THREE.MeshBasicMaterial({ color: new THREE.Color(0xffffff).multiplyScalar(5), side: THREE.DoubleSide }));
-    m.position.set(x, y, 4.5);
-    m.lookAt(0, 0, 0);
-    env.add(m);
-  };
-  [[-1.3, 4.6], [1.3, 4.6], [-1.3, 2.0], [1.3, 2.0]].forEach(([x, y]) => pane(x, y));   // gaps between panes form the window bars
-  // dim, wide bounce from below: a soft grey falloff on the lower half so the black shape reads
-  const floor = new THREE.Mesh(new THREE.PlaneGeometry(16, 6), new THREE.MeshBasicMaterial({ color: new THREE.Color(0x9aa0aa).multiplyScalar(0.28), side: THREE.DoubleSide }));
-  floor.position.set(0, -7, -1);
-  floor.lookAt(0, 0, 0);
-  env.add(floor);
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  return pmrem.fromScene(env, 0.01).texture;
+/* ---------- Contact: shape-blend liquid (ray-marched signed distance fields) ---------- */
+// Two spheres joined with a smooth union: a large one fixed in the middle and a smaller one that sits
+// under the cursor. As they approach, the surfaces melt together with a gooey neck. Shaded as glossy
+// black with a curved 2x2 window reflection and a faint grey lower rim, rendered per pixel.
+const BLOB_FRAG = `
+precision highp float;
+uniform vec2 uRes;
+uniform float uTime;
+uniform vec3 uMain;
+uniform vec3 uFollow;
+uniform float uRMain;
+uniform float uRFollow;
+varying vec2 vUv;
+
+float sdSphere(vec3 p, vec3 c, float r) { return length(p - c) - r; }
+float smin(float a, float b, float k) {           // polynomial smooth minimum = "shape blend"
+  float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0);
+  return mix(b, a, h) - k * h * (1.0 - h);
+}
+float map(vec3 p) {
+  float breathe = 1.0 + 0.015 * sin(uTime * 1.3);
+  float a = sdSphere(p, uMain, uRMain * breathe);
+  float b = sdSphere(p, uFollow, uRFollow);
+  return smin(a, b, 0.32);
+}
+vec3 normalAt(vec3 p) {
+  vec2 e = vec2(0.0008, 0.0);
+  return normalize(vec3(map(p + e.xyy) - map(p - e.xyy), map(p + e.yxy) - map(p - e.yxy), map(p + e.yyx) - map(p - e.yyx)));
+}
+// studio: a large 2x2 window above and slightly in front of the drop
+float windowLight(vec3 r) {
+  if (r.y < 0.02) return 0.0;
+  vec3 hit = r * (1.3 / r.y);                    // window plane at y = 1.3
+  vec2 q = vec2(hit.x, hit.z - 0.7);
+  float half_ = 2.4;
+  vec2 cell = abs(q) - vec2(0.09);               // dark mullions forming the 2x2 grid
+  float inside = step(0.0, min(cell.x, cell.y)) * step(max(abs(q.x), abs(q.y)), half_);
+  float fade = smoothstep(half_, half_ * 0.55, max(abs(q.x), abs(q.y)));
+  return inside * mix(0.35, 1.0, fade);
 }
 
-async function blob() {
+void main() {
+  vec2 uv = (vUv * 2.0 - 1.0) * vec2(uRes.x / uRes.y, 1.0);
+  vec3 ro = vec3(0.0, 0.0, 5.0);
+  vec3 rd = normalize(vec3(uv * 0.28, -1.0));      // ~31 degree vertical field of view
+  float t = 0.0, d = 1.0, minD = 1e9;
+  for (int i = 0; i < 90; i++) {
+    vec3 p = ro + rd * t;
+    d = map(p);
+    minD = min(minD, d);
+    if (d < 0.0006 || t > 9.0) break;
+    t += d;
+  }
+  if (d > 0.002) {                                 // miss: transparent, with a soft anti-aliased edge
+    float edge = 1.0 - smoothstep(0.0, 1.6 / uRes.y, minD);
+    gl_FragColor = vec4(vec3(0.02), edge * 0.0);
+    return;
+  }
+  vec3 p = ro + rd * t;
+  vec3 n = normalAt(p);
+  vec3 r = reflect(rd, n);
+  float fres = pow(1.0 - max(dot(n, -rd), 0.0), 5.0);
+  float refl = mix(0.42, 1.0, fres);               // glossy black lacquer
+  float lower = smoothstep(-0.25, -0.95, r.y) * (0.2 + 0.8 * fres) * 0.11;  // faint grey lower rim
+  vec3 col = vec3(0.0006) + vec3(windowLight(r)) * refl * 0.85 + vec3(lower);
+  col = pow(col, vec3(1.0 / 2.2));                 // to sRGB
+  gl_FragColor = vec4(col, 1.0);
+}`;
+
+function blob() {
   const canvas = document.getElementById("blob");
   const renderer = canvas && makeRenderer(canvas);
   if (!renderer) return;
-  const { MarchingCubes } = await import("three/addons/objects/MarchingCubes.js");
-  renderer.toneMappingExposure = 1.15;
+  renderer.toneMapping = THREE.NoToneMapping;
   const scene = new THREE.Scene();
-  scene.environment = windowEnv(renderer);
-  const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
-  camera.position.set(0, 0, 7.5);
+  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  const uniforms = {
+    uRes: { value: new THREE.Vector2(1, 1) }, uTime: { value: 0 },
+    uMain: { value: new THREE.Vector3(0, 0.02, 0) }, uFollow: { value: new THREE.Vector3(0.22, -0.42, 0) },
+    uRMain: { value: 0.46 }, uRFollow: { value: 0.24 },
+  };
+  const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMaterial({
+    uniforms, transparent: true,
+    vertexShader: "varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }",
+    fragmentShader: BLOB_FRAG,
+  }));
+  scene.add(quad);
 
-  const mat = new THREE.MeshPhysicalMaterial({
-    color: 0x050506, metalness: 0.0, roughness: 0.08, clearcoat: 1, clearcoatRoughness: 0.03, envMapIntensity: 1.7,
-  });
-  // the field covers the whole visible card, so the follower can reach any point under the cursor
-  const SCALE = 3.4;
-  const balls = new MarchingCubes(64, mat, false, false, 80000);
-  balls.scale.setScalar(SCALE);
-  scene.add(balls);
-
+  // the ray setup in the shader maps screen y in [-1,1] to world y = y * 0.28 * 5 at the z=0 plane
+  const SPAN = 0.28 * 5.0;
   const card = canvas.parentElement;
-  const toField = (w) => (w / SCALE + 1) / 2;
-  const follower = { x: 0.68, y: 0.38 }, aim = { x: 0.68, y: 0.38 };
+  const aim = new THREE.Vector3(0.22, -0.42, 0), idle = new THREE.Vector3(0.22, -0.42, 0);
   let hovering = false;
-  const ray = new THREE.Raycaster(), plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0), hit = new THREE.Vector3();
   card.addEventListener("pointermove", (e) => {
     const r = canvas.getBoundingClientRect();
-    ray.setFromCamera(new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1), camera);
-    if (ray.ray.intersectPlane(plane, hit)) {
-      aim.x = Math.min(0.9, Math.max(0.1, toField(hit.x)));
-      aim.y = Math.min(0.9, Math.max(0.1, toField(hit.y)));
-      hovering = true;
-    }
+    const sx = ((e.clientX - r.left) / r.width) * 2 - 1, sy = -(((e.clientY - r.top) / r.height) * 2 - 1);
+    aim.set(sx * SPAN * (r.width / r.height), sy * SPAN, 0);
+    hovering = true;
   });
   card.addEventListener("pointerleave", () => { hovering = false; });
 
   run(canvas, renderer, scene, camera, (t) => {
-    // without a cursor, the small drop drifts slowly around the big one
-    if (!hovering) {
-      aim.x = 0.5 + Math.cos(t * 0.45) * 0.2;
-      aim.y = 0.5 + Math.sin(t * 0.6) * 0.14;
+    uniforms.uRes.value.set(canvas.width, canvas.height);
+    uniforms.uTime.value = t;
+    if (!hovering) {   // idle: the small sphere rests against the big one, drifting slightly
+      idle.set(0.22 + Math.sin(t * 0.6) * 0.06, -0.42 + Math.cos(t * 0.5) * 0.04, 0);
+      aim.copy(idle);
     }
-    const k = hovering ? 0.22 : 0.03;          // snappy tracking under the cursor
-    follower.x += (aim.x - follower.x) * k;
-    follower.y += (aim.y - follower.y) * k;
-
-    balls.reset();
-    // main drop: two overlapping balls wobbling gives a soft, living shape
-    balls.addBall(0.5 + Math.sin(t * 0.7) * 0.025, 0.5 + Math.cos(t * 0.5) * 0.02, 0.5, 1.2, 12);
-    balls.addBall(0.5 + Math.cos(t * 0.9) * 0.05, 0.46 + Math.sin(t * 0.8) * 0.035, 0.5, 0.3, 12);
-    // cursor drop
-    balls.addBall(follower.x, follower.y, 0.5, 0.16, 12);
-    // tiny free drop
-    balls.addBall(0.5 + Math.sin(t * 0.33 + 2) * 0.26, 0.5 + Math.cos(t * 0.41) * 0.2, 0.5, 0.05, 12);
-    balls.update();
+    uniforms.uFollow.value.lerp(aim, hovering ? 0.2 : 0.05);
   });
 }
 
