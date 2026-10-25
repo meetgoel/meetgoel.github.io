@@ -413,8 +413,8 @@ a { color: inherit; }
 .contact-card h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); margin-bottom: 12px; }
 .contact-card p { color: var(--muted); margin-bottom: 26px; max-width: 52ch; }
 .contact-actions { display: flex; flex-wrap: wrap; gap: 10px; }
-.brain-card { border-radius: var(--r-l); border: 1px solid var(--line); background: radial-gradient(80% 80% at 50% 45%, #121216, #08080a 75%); min-height: 340px; overflow: hidden; position: relative; }
-#brain { position: absolute; inset: 0; width: 100%; height: 100%; }
+.blob-card { border-radius: var(--r-l); border: 1px solid var(--line); background: radial-gradient(80% 80% at 50% 45%, #121216, #08080a 75%); min-height: 340px; overflow: hidden; position: relative; }
+#blob { position: absolute; inset: 0; width: 100%; height: 100%; }
 
 /* Footer */
 .footer { position: relative; padding: 70px var(--gutter) 28px; overflow: hidden; }
@@ -574,13 +574,6 @@ body.chat-open .chat-fab { opacity: 0; pointer-events: none; transform: scale(.9
 .sg-lang { color: var(--muted); font-size: .86rem; margin-top: 14px; }
 .sg-lang b { color: var(--text); }
 
-/* Interactive neural network card */
-.brain-card { background: radial-gradient(80% 80% at 50% 45%, #0F1626, #07080B 75%) !important; cursor: grab; touch-action: pan-y; }
-.brain-card:active { cursor: grabbing; }
-.brain-tip { position: absolute; z-index: 2; pointer-events: none; transform: translate(-50%, calc(-100% - 14px)); white-space: nowrap;
-  font: 600 .78rem var(--font); color: #fff; padding: 6px 10px; border-radius: 999px; background: rgba(15, 26, 46, .9); border: 1px solid #2F8CFF; box-shadow: 0 6px 20px rgba(47, 140, 255, .35); }
-.brain-hint { position: absolute; left: 14px; bottom: 12px; display: flex; gap: 8px; pointer-events: none; }
-.brain-hint span { font-size: .7rem; color: var(--muted); padding: 4px 9px; border-radius: 999px; background: rgba(0, 0, 0, .45); border: 1px solid var(--line); }
 
 /* ---------- Fun buttons ---------- */
 .btn.magnetic { transition: transform .25s cubic-bezier(.2,.9,.3,1.4), background .3s, border-color .3s, box-shadow .3s; will-change: transform; }
@@ -588,14 +581,6 @@ body.chat-open .chat-fab { opacity: 0; pointer-events: none; transform: scale(.9
 @keyframes ripple { to { transform: translate(-50%, -50%) scale(1); opacity: 0; } }
 a[download]:hover .ico { animation: drop .9s ease-in-out infinite; }
 @keyframes drop { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(3px); } }
-.btn-dice { background: linear-gradient(135deg, #1A1530, #11111A); color: var(--text); border: 1px solid #3B3370; }
-.btn-dice:hover { border-color: var(--purple); box-shadow: 0 0 24px -6px rgba(166, 108, 255, .7); }
-.btn-dice .die { display: inline-block; transition: transform .6s cubic-bezier(.2,.9,.3,1.4); }
-.btn-dice:hover .die { transform: rotate(200deg) scale(1.15); }
-.btn-dice.rolling .die { animation: roll .6s linear; }
-@keyframes roll { to { transform: rotate(720deg); } }
-.card.surprise { animation: surprise 2.2s ease; }
-@keyframes surprise { 0%, 100% { box-shadow: none; } 20%, 60% { box-shadow: 0 0 0 2px var(--purple), 0 0 60px -10px rgba(166, 108, 255, .9); transform: translateY(-6px) scale(1.02); } }
 .btn-glow { position: relative; isolation: isolate; border-color: transparent !important; }
 .btn-glow::before { content: ""; position: absolute; inset: -1px; border-radius: inherit; padding: 1px; z-index: -1;
   background: conic-gradient(from var(--ang, 0deg), #2F8CFF, #A66CFF, #4ADE80, #2F8CFF);
@@ -604,10 +589,5 @@ a[download]:hover .ico { animation: drop .9s ease-in-out infinite; }
 @keyframes spinang { to { --ang: 360deg; } }
 .confetti { position: fixed; inset: 0; pointer-events: none; z-index: 90; }
 @media (prefers-reduced-motion: reduce) { .btn.magnetic { transition: none; } .btn-glow::before { animation: none; } }
-.egg-hint { display: block; margin-top: 6px; font-size: .72rem; color: #4A4A54; transition: color .3s; }
-.egg-hint:hover { color: var(--muted); }
-.secret-veil { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; background: #05060A; animation: veil .45s ease forwards; }
-.secret-veil p { font: 800 clamp(1.4rem, 4vw, 2.4rem) var(--display); letter-spacing: .02em; color: #7CC0FF; animation: pop .5s .2s both; }
-@keyframes veil { from { clip-path: circle(0 at 50% 50%); } to { clip-path: circle(150% at 50% 50%); } }
 
 .tools li { aspect-ratio: auto; min-height: 92px; padding: 10px 4px; text-align: center; }

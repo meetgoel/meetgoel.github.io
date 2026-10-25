@@ -302,7 +302,6 @@ async function aiAnswer(question, ranked, holder) {
 
 async function answer(question) {
   if (busy || !question.trim()) return;
-  if (/^\s*mario\s*[!.]*\s*$/i.test(question)) { window.goSecret?.(); return; }   // easter egg
   busy = true;
   chips.hidden = true;
   bubble("user", `<p>${esc(question)}</p>`);

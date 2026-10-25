@@ -303,7 +303,7 @@ function initMarquee() {
   track.innerHTML += track.innerHTML.replace(/alt="[^"]*"/g, 'alt="" aria-hidden="true"');
 }
 
-/* ---------- Fun buttons: magnetic pull, ripples, dice, download feedback, confetti ---------- */
+/* ---------- Fun buttons: magnetic pull, ripples, download feedback, confetti ---------- */
 function initFunButtons() {
   document.querySelectorAll(".btn").forEach((btn) => {
     btn.addEventListener("pointerdown", (e) => {
@@ -336,17 +336,6 @@ function initFunButtons() {
       setTimeout(() => { label.textContent = old; delete a.dataset.busy; }, 2200);
     });
   });
-  const dice = document.getElementById("dice");
-  dice?.addEventListener("click", () => {
-    const cards = [...document.querySelectorAll("#project-grid .card:not([hidden])")];
-    const pick = cards[Math.floor(Math.random() * cards.length)];
-    dice.classList.remove("rolling"); void dice.offsetWidth; dice.classList.add("rolling");
-    if (!pick) return;
-    const y = pick.getBoundingClientRect().top + window.scrollY - 140;
-    lenis ? lenis.scrollTo(y) : window.scrollTo({ top: y, behavior: "smooth" });
-    pick.classList.add("in");
-    setTimeout(() => { pick.classList.remove("surprise"); void pick.offsetWidth; pick.classList.add("surprise"); }, 900);
-  });
 }
 
 function confetti(x, y) {
@@ -371,26 +360,6 @@ function confetti(x, y) {
     });
     if (frame++ < 110) requestAnimationFrame(tick); else c.remove();
   })();
-}
-
-/* ---------- Easter egg: type "mario" anywhere to unlock the secret level ---------- */
-function goSecret() {
-  const v = document.createElement("div");
-  v.className = "secret-veil";
-  v.innerHTML = "<p>🍄 Secret level unlocked!</p>";
-  document.body.appendChild(v);
-  setTimeout(() => { location.href = "mario.html"; }, 1100);
-}
-window.goSecret = goSecret;
-function initEasterEgg() {
-  let typed = "";
-  document.addEventListener("keydown", (e) => {
-    const el = e.target instanceof Element ? e.target : null;
-    if ((el && el.closest("input, textarea, select, [contenteditable]")) || e.metaKey || e.ctrlKey || e.altKey) return;
-    if (e.key.length !== 1) return;
-    typed = (typed + e.key.toLowerCase()).slice(-5);
-    if (typed === "mario") goSecret();
-  });
 }
 
 /* ---------- Copy email ---------- */
@@ -423,4 +392,3 @@ initCerts();
 initMarquee();
 initCopy();
 initFunButtons();
-initEasterEgg();
