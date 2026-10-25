@@ -1,4 +1,4 @@
-// Three.js scenes: chrome monogram (hero), point-cloud globe (skills), shape-blend liquid that follows the cursor (contact).
+// Three.js scenes: chrome monogram (hero), point-cloud globe (skills), interactive neural network (contact).
 import * as THREE from "three";
 import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
@@ -148,118 +148,179 @@ function globe() {
   run(canvas, renderer, scene, camera, (t) => { globeGroup.rotation.y = t * 0.18; });
 }
 
-/* ---------- Contact: shape-blend liquid (ray-marched signed distance fields) ---------- */
-// Two spheres joined with a smooth union: a large one fixed in the middle and a smaller one that sits
-// under the cursor. As they approach, the surfaces melt together with a gooey neck. Shaded as glossy
-// black with a curved 2x2 window reflection and a faint grey lower rim, rendered per pixel.
-const BLOB_FRAG = `
-precision highp float;
-uniform vec2 uRes;
-uniform float uTime;
-uniform vec3 uMain;
-uniform vec3 uFollow;
-uniform float uRMain;
-uniform float uRFollow;
-varying vec2 vUv;
-
-float sdSphere(vec3 p, vec3 c, float r) { return length(p - c) - r; }
-float smin(float a, float b, float k) {           // polynomial smooth minimum = "shape blend"
-  float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0);
-  return mix(b, a, h) - k * h * (1.0 - h);
-}
-float map(vec3 p) {
-  float breathe = 1.0 + 0.015 * sin(uTime * 1.3);
-  float a = sdSphere(p, uMain, uRMain * breathe);
-  float b = sdSphere(p, uFollow, uRFollow);
-  return smin(a, b, 0.32);
-}
-vec3 normalAt(vec3 p) {
-  vec2 e = vec2(0.0008, 0.0);
-  return normalize(vec3(map(p + e.xyy) - map(p - e.xyy), map(p + e.yxy) - map(p - e.yxy), map(p + e.yyx) - map(p - e.yyx)));
-}
-// studio: a large 2x2 window above and slightly in front of the drop
-float windowLight(vec3 r) {
-  if (r.y < 0.02) return 0.0;
-  vec3 hit = r * (1.3 / r.y);                    // window plane at y = 1.3
-  vec2 q = vec2(hit.x, hit.z - 0.7);
-  float half_ = 2.4;
-  vec2 cell = abs(q) - vec2(0.09);               // dark mullions forming the 2x2 grid
-  float inside = step(0.0, min(cell.x, cell.y)) * step(max(abs(q.x), abs(q.y)), half_);
-  float fade = smoothstep(half_, half_ * 0.55, max(abs(q.x), abs(q.y)));
-  return inside * mix(0.35, 1.0, fade);
+/* ---------- Contact: an interactive 3D neural network ---------- */
+// Five layers of glowing neurons joined by synapses. Drag to spin (with inertia), hover a neuron to
+// light up its connections and see a skill, click to fire a wave of signals through the layers.
+function glowTexture() {
+  const c = document.createElement("canvas");
+  c.width = c.height = 64;
+  const g = c.getContext("2d");
+  const grd = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+  grd.addColorStop(0, "rgba(255,255,255,1)");
+  grd.addColorStop(0.25, "rgba(255,255,255,.55)");
+  grd.addColorStop(1, "rgba(255,255,255,0)");
+  g.fillStyle = grd;
+  g.fillRect(0, 0, 64, 64);
+  return new THREE.CanvasTexture(c);
 }
 
-void main() {
-  vec2 uv = (vUv * 2.0 - 1.0) * vec2(uRes.x / uRes.y, 1.0);
-  vec3 ro = vec3(0.0, 0.0, 5.0);
-  vec3 rd = normalize(vec3(uv * 0.28, -1.0));      // ~31 degree vertical field of view
-  float t = 0.0, d = 1.0, minD = 1e9;
-  for (int i = 0; i < 90; i++) {
-    vec3 p = ro + rd * t;
-    d = map(p);
-    minD = min(minD, d);
-    if (d < 0.0006 || t > 9.0) break;
-    t += d;
-  }
-  if (d > 0.002) {                                 // miss: transparent, with a soft anti-aliased edge
-    float edge = 1.0 - smoothstep(0.0, 1.6 / uRes.y, minD);
-    gl_FragColor = vec4(vec3(0.02), edge * 0.0);
-    return;
-  }
-  vec3 p = ro + rd * t;
-  vec3 n = normalAt(p);
-  vec3 r = reflect(rd, n);
-  float fres = pow(1.0 - max(dot(n, -rd), 0.0), 5.0);
-  float refl = mix(0.42, 1.0, fres);               // glossy black lacquer
-  float lower = smoothstep(-0.25, -0.95, r.y) * (0.2 + 0.8 * fres) * 0.11;  // faint grey lower rim
-  vec3 col = vec3(0.0006) + vec3(windowLight(r)) * refl * 0.85 + vec3(lower);
-  col = pow(col, vec3(1.0 / 2.2));                 // to sRGB
-  gl_FragColor = vec4(col, 1.0);
-}`;
-
-function blob() {
-  const canvas = document.getElementById("blob");
+function brain() {
+  const canvas = document.getElementById("brain");
   const renderer = canvas && makeRenderer(canvas);
   if (!renderer) return;
   renderer.toneMapping = THREE.NoToneMapping;
   const scene = new THREE.Scene();
-  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-  const uniforms = {
-    uRes: { value: new THREE.Vector2(1, 1) }, uTime: { value: 0 },
-    uMain: { value: new THREE.Vector3(0, 0.02, 0) }, uFollow: { value: new THREE.Vector3(0.22, -0.42, 0) },
-    uRMain: { value: 0.46 }, uRFollow: { value: 0.24 },
-  };
-  const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMaterial({
-    uniforms, transparent: true,
-    vertexShader: "varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }",
-    fragmentShader: BLOB_FRAG,
-  }));
-  scene.add(quad);
+  const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
+  camera.position.set(0, 0.2, 11.5);
+  const net = new THREE.Group();
+  net.rotation.set(0.18, -0.5, 0);
+  scene.add(net);
 
-  // the ray setup in the shader maps screen y in [-1,1] to world y = y * 0.28 * 5 at the z=0 plane
-  const SPAN = 0.28 * 5.0;
-  const card = canvas.parentElement;
-  const aim = new THREE.Vector3(0.22, -0.42, 0), idle = new THREE.Vector3(0.22, -0.42, 0);
-  let hovering = false;
-  card.addEventListener("pointermove", (e) => {
-    const r = canvas.getBoundingClientRect();
-    const sx = ((e.clientX - r.left) / r.width) * 2 - 1, sy = -(((e.clientY - r.top) / r.height) * 2 - 1);
-    aim.set(sx * SPAN * (r.width / r.height), sy * SPAN, 0);
-    hovering = true;
+  const LAYERS = [
+    ["Python", "SQL", "Azure SQL", "Power Automate", "Excel data"],
+    ["NLP", "Machine Learning", "Deep Learning", "Hugging Face", "scikit-learn", "LIME", "Qwen2.5"],
+    ["Data modelling", "T-SQL", "Data quality", "Docker", "AWS EC2", "Power Apps", "SAP Signavio"],
+    ["Generative AI", "AI agents", "LLM evaluation", "Power BI", "Forecasting", "Copilot Studio"],
+    ["Insight", "Automation", "Impact"],
+  ];
+  const palette = [0x7cc0ff, 0x2f8cff, 0x8b7cff, 0xa66cff, 0x4ade80];
+  const tex = glowTexture();
+  const nodes = [];                 // {pos, layer, label, mesh, glow, flash}
+  LAYERS.forEach((labels, li) => {
+    const n = labels.length, R = 0.45 + n * 0.16;
+    labels.forEach((label, k) => {
+      const ang = (k / n) * Math.PI * 2 + li * 0.55;
+      const pos = new THREE.Vector3((li - (LAYERS.length - 1) / 2) * 1.6, Math.cos(ang) * R, Math.sin(ang) * R);
+      const color = new THREE.Color(palette[li]);
+      const mesh = new THREE.Mesh(new THREE.SphereGeometry(li === LAYERS.length - 1 ? 0.15 : 0.1, 20, 20), new THREE.MeshBasicMaterial({ color }));
+      mesh.position.copy(pos);
+      const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, color, transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false }));
+      glow.position.copy(pos);
+      glow.scale.setScalar(0.75);
+      net.add(mesh, glow);
+      nodes.push({ pos, layer: li, label, mesh, glow, flash: 0, idx: nodes.length });
+      mesh.userData.node = nodes[nodes.length - 1];
+    });
   });
-  card.addEventListener("pointerleave", () => { hovering = false; });
 
-  run(canvas, renderer, scene, camera, (t) => {
-    uniforms.uRes.value.set(canvas.width, canvas.height);
-    uniforms.uTime.value = t;
-    if (!hovering) {   // idle: the small sphere rests against the big one, drifting slightly
-      idle.set(0.22 + Math.sin(t * 0.6) * 0.06, -0.42 + Math.cos(t * 0.5) * 0.04, 0);
-      aim.copy(idle);
+  // synapses between consecutive layers
+  const edges = [];
+  for (const a of nodes) for (const b of nodes) if (b.layer === a.layer + 1) edges.push({ a, b, heat: 0 });
+  const epos = new Float32Array(edges.length * 6), ecol = new Float32Array(edges.length * 6);
+  edges.forEach((e, i) => { epos.set([e.a.pos.x, e.a.pos.y, e.a.pos.z, e.b.pos.x, e.b.pos.y, e.b.pos.z], i * 6); });
+  const eg = new THREE.BufferGeometry();
+  eg.setAttribute("position", new THREE.BufferAttribute(epos, 3));
+  eg.setAttribute("color", new THREE.BufferAttribute(ecol, 3));
+  net.add(new THREE.LineSegments(eg, new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false })));
+  const outgoing = (n) => edges.filter((e) => e.a === n);
+
+  // travelling signals
+  const pulses = [];
+  const pulseMat = new THREE.SpriteMaterial({ map: tex, color: 0xffffff, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false });
+  function send(edge, delay = 0) {
+    const sp = new THREE.Sprite(pulseMat);
+    sp.scale.setScalar(0.32);
+    sp.visible = false;
+    net.add(sp);
+    pulses.push({ edge, t: -delay, speed: 0.9 + Math.random() * 0.5, sp });
+  }
+  function fire(from) {
+    const starts = from ? [from] : nodes.filter((n) => n.layer === 0);
+    starts.forEach((n, i) => {
+      n.flash = 1;
+      const out = outgoing(n).sort(() => Math.random() - 0.5).slice(0, from ? 4 : 2);
+      out.forEach((e) => send(e, i * 0.08));
+    });
+  }
+
+  // interaction: drag to spin, hover to inspect, click to fire
+  const tip = document.getElementById("brain-tip");
+  const card = canvas.parentElement;
+  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+  let dragging = false, moved = 0, lastX = 0, lastY = 0, vy = 0.0025, vx = 0, hovered = null;
+  const pick = (e) => {
+    const r = canvas.getBoundingClientRect();
+    ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(ndc, camera);
+    const hit = ray.intersectObjects(nodes.map((n) => n.mesh))[0];
+    return hit ? hit.object.userData.node : null;
+  };
+  card.addEventListener("pointerdown", (e) => { dragging = true; moved = 0; lastX = e.clientX; lastY = e.clientY; card.setPointerCapture(e.pointerId); });
+  card.addEventListener("pointermove", (e) => {
+    if (dragging) {
+      const dx = e.clientX - lastX, dy = e.clientY - lastY;
+      moved += Math.abs(dx) + Math.abs(dy);
+      vy = dx * 0.005; vx = dy * 0.003;
+      net.rotation.y += vy; net.rotation.x = Math.max(-0.7, Math.min(0.7, net.rotation.x + vx));
+      lastX = e.clientX; lastY = e.clientY;
     }
-    uniforms.uFollow.value.lerp(aim, hovering ? 0.2 : 0.05);
+    hovered = pick(e);
+  });
+  card.addEventListener("pointerup", (e) => {
+    dragging = false;
+    if (moved < 6) fire(pick(e));   // a click, not a drag
+  });
+  card.addEventListener("pointerleave", () => { hovered = null; dragging = false; });
+
+  const tmp = new THREE.Vector3();
+  let last = 0, nextAuto = 1.2;
+  run(canvas, renderer, scene, camera, (t) => {
+    const dt = Math.min(0.05, t - last || 0.016);
+    last = t;
+    if (!dragging) {
+      net.rotation.y += vy;
+      vy += (0.0025 - vy) * 0.03;          // ease back to a gentle auto-spin
+      net.rotation.x += (0.18 - net.rotation.x) * 0.02;
+    }
+    if (t > nextAuto) { fire(); nextAuto = t + 3.2; }
+
+    // edges cool down; highlighted ones stay warm
+    edges.forEach((e, i) => {
+      const hot = hovered && (e.a === hovered || e.b === hovered) ? 1 : 0;
+      e.heat = Math.max(e.heat * 0.94, hot * 0.9);
+      const base = 0.07 + e.heat;
+      const c = 0.35 + e.heat * 0.65;
+      ecol.set([base * 0.5, base * c, base, base * 0.6, base * c, base], i * 6);
+    });
+    eg.attributes.color.needsUpdate = true;
+
+    for (let i = pulses.length - 1; i >= 0; i--) {
+      const p = pulses[i];
+      p.t += dt * p.speed;
+      if (p.t < 0) continue;
+      p.sp.visible = true;
+      p.edge.heat = Math.max(p.edge.heat, 0.8);
+      p.sp.position.lerpVectors(p.edge.a.pos, p.edge.b.pos, Math.min(1, p.t));
+      if (p.t >= 1) {
+        const n = p.edge.b;
+        n.flash = 1;
+        if (n.layer < LAYERS.length - 1 && Math.random() < 0.75) {
+          outgoing(n).sort(() => Math.random() - 0.5).slice(0, 2).forEach((e) => send(e));
+        }
+        net.remove(p.sp);
+        pulses.splice(i, 1);
+      }
+    }
+    if (pulses.length > 160) pulses.splice(0, pulses.length - 160).forEach((p) => net.remove(p.sp));
+
+    nodes.forEach((n) => {
+      n.flash *= 0.92;
+      const h = n === hovered ? 1 : 0;
+      n.mesh.scale.setScalar(1 + n.flash * 0.9 + h * 0.6);
+      n.glow.scale.setScalar(0.75 + n.flash * 1.4 + h * 0.6);
+      n.glow.material.opacity = 0.45 + n.flash * 0.55 + h * 0.4;
+    });
+
+    if (hovered) {
+      hovered.mesh.getWorldPosition(tmp).project(camera);
+      tip.hidden = false;
+      tip.textContent = hovered.label;
+      tip.style.left = `${((tmp.x + 1) / 2) * canvas.clientWidth}px`;
+      tip.style.top = `${((1 - tmp.y) / 2) * canvas.clientHeight}px`;
+    } else tip.hidden = true;
   });
 }
 
 chromeMonogram();
 globe();
-blob();
+brain();

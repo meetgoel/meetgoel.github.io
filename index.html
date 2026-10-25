@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@600&family=JetBrains+Mono:wght@500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20261025n">
+  <link rel="stylesheet" href="css/style.css?v=20261025u">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -76,7 +76,7 @@
       <nav class="pill-nav" aria-label="Sections">
         <a href="#about">About</a><a href="#experience">Experience</a><a href="#education">Education</a><a href="#skills">Skills</a><a href="#projects">Projects</a><a href="#thesis">Thesis</a><a href="#certifications">Certificates</a>
       </nav>
-      <a class="btn btn-dark btn-shine" href="#contact">Let’s Connect</a>
+      <a class="btn btn-dark btn-shine btn-glow" href="#contact">Let’s Connect</a>
     </div>
     <button class="burger" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
       <span></span><span></span><span></span>
@@ -119,6 +119,7 @@
         <div class="hero-cta">
           <a class="btn btn-blue btn-shine" href="#projects">See my work</a>
           <a class="btn btn-dark" href="download/meet_goel_cv.pdf" download="Meet_Goel_Resume.pdf"><svg class="ico"><use href="#i-down"/></svg>Download CV</a>
+          <button class="btn btn-dice" id="dice" type="button"><span class="die" aria-hidden="true">🎲</span>Surprise me</button>
         </div>
         <ul class="hero-facts">
           <li><span class="live"></span>Open to data and AI roles</li>
@@ -180,12 +181,13 @@
         <div class="roles">
           <div class="role">
             <div class="role-head"><h4>Working Student, Service Management and Operations</h4><span>May 2026 to present</span></div>
+            <p class="role-lead">I turn operational data into AI-powered tools that Service Management Operations uses to monitor, report and decide.</p>
             <ul>
-              <li>Built <b>Ticket-to-Talk</b>, an AI agent in Microsoft Copilot Studio that analyses incident exports from the SHARP ticketing system and generates a filterable dashboard with KPI metrics and an incident summary.</li>
-              <li>Extended the agent to produce presentation-ready PowerPoint decks in the team’s custom template, turning raw incident data into management reporting.</li>
-              <li>Built the <b>Interface Catalogue</b>, a Power Apps application on a 13-table relational data model in Azure SQL Server with bulk Excel ingestion via Power Automate, giving Service Management Operations one source of truth for interface metadata across enterprise systems.</li>
-              <li>Implemented business rules and data quality controls in T-SQL stored procedures (existence checks, auto-creation logic, global search), keeping logic in the governed data layer rather than the front end.</li>
-              <li>Automated communication documentation with a Copilot Studio agent and Power Automate as part of departmental AI enablement.</li>
+              <li><b>Ticket-to-Talk, an AI agent for incident insight.</b> Designed and built a Microsoft Copilot Studio agent that reads raw incident exports from the SHARP ticketing system and returns a filterable KPI dashboard with an incident summary, so the team sees service performance at a glance instead of analysing exports by hand.</li>
+              <li><b>Automated management reporting.</b> Extended the agent to generate presentation-ready PowerPoint decks in the team’s own template, replacing manual slide preparation with a repeatable, one-step report.</li>
+              <li><b>Interface Catalogue, one source of truth.</b> Built a Power Apps application on a 13-table relational data model in Azure SQL Server, with bulk Excel ingestion through Power Automate, giving the department a single, trusted record of technical interface metadata across enterprise systems.</li>
+              <li><b>Governed data layer.</b> Encoded business rules and data-quality controls in T-SQL stored procedures (existence checks, auto-creation logic, global search), so every app built on the data inherits the same validated logic.</li>
+              <li><b>AI enablement.</b> Automated communication documentation with a Copilot Studio agent and Power Automate as part of the department’s AI enablement.</li>
             </ul>
             <div class="chips"><span>Copilot Studio</span><span>Azure SQL Server</span><span>T-SQL</span><span>Power Apps</span><span>Power Automate</span><span>PowerPoint</span></div>
           </div>
@@ -312,12 +314,25 @@
           <li><span class="ti" style="--i:url(/assets/icons/openai.svg)"></span>OpenAI API</li>
           <li><span class="ti" style="--i:url(/assets/icons/opencv.svg)"></span>OpenCV</li>
           <li><span class="ti" style="--i:url(/assets/icons/git.svg)"></span>Git</li>
+          <li><span class="ti" style="--i:url(/assets/icons/docker.svg)"></span>Docker</li>
+          <li><span class="ti" style="--i:url(/assets/icons/azure.svg)"></span>Azure SQL</li>
         </ul>
         <div class="globe-card">
           <canvas id="globe" aria-hidden="true"></canvas>
           <h3>Based in Germany</h3>
           <p>Based in Erlangen. On-site or hybrid in Erlangen, Nuremberg, Munich, Berlin and Frankfurt. Also skilled in Copilot Studio, Power Automate, Power Apps and Power BI.</p>
         </div>
+      </div>
+
+      <div class="skillset reveal">
+        <h3>Full skill set</h3>
+        <div class="skill-groups">
+          <div class="sg"><h4><span class="dot-ai"></span>Generative AI and agents</h4><p>Generative AI, AI agents, LLM prompting and evaluation, Microsoft Copilot Studio, Hugging Face Transformers, Qwen2.5 (open-weight LLM)</p></div>
+          <div class="sg"><h4><span class="dot-ml"></span>Machine learning and data science</h4><p>Python, machine learning, deep learning, NLP, scikit-learn, PyTorch, model interpretability (LIME), robustness testing, forecasting</p></div>
+          <div class="sg"><h4><span class="dot-de"></span>Data engineering and cloud</h4><p>SQL, T-SQL stored procedures, relational data modelling, data quality and governance, Microsoft Azure (Azure SQL Server), AWS (EC2), Docker, Git</p></div>
+          <div class="sg"><h4><span class="dot-bp"></span>Business process and enterprise apps</h4><p>SAP Signavio, interface architecture, Power Apps, Power Automate, Power BI, Excel, PowerPoint automation, Tableau</p></div>
+        </div>
+        <p class="sg-lang"><b>Languages:</b> English (professional working proficiency), German (limited working proficiency), Hindi (native)</p>
       </div>
     </section>
 
@@ -595,8 +610,10 @@
             <a class="btn btn-dark" href="download/meet_goel_cv.pdf" download="Meet_Goel_Resume.pdf"><svg class="ico"><use href="#i-down"/></svg>CV</a>
           </div>
         </div>
-        <div class="blob-card reveal">
-          <canvas id="blob" aria-hidden="true"></canvas>
+        <div class="brain-card reveal">
+          <canvas id="brain" aria-label="Interactive 3D neural network. Drag to rotate, click to send signals." role="img"></canvas>
+          <div class="brain-tip" id="brain-tip" hidden></div>
+          <p class="brain-hint"><span>Drag to spin</span><span>Click to fire signals</span></p>
         </div>
       </div>
     </section>
@@ -611,7 +628,7 @@
         <span class="f-social"><a href="https://www.linkedin.com/in/meet-goel/" aria-label="LinkedIn"><svg class="ico"><use href="#i-linkedin"/></svg></a><a href="https://github.com/meetgoel" aria-label="GitHub"><svg class="ico"><use href="#i-github"/></svg></a></span>
       </div>
     </div>
-    <p class="f-copy">© 2026 Meet Goel. All rights reserved.</p>
+    <p class="f-copy">© 2026 Meet Goel. All rights reserved. <span class="egg-hint" title="Psst…">Psst… there’s a secret level. Type the name of a famous plumber 🍄</span></p>
   </footer>
 
   <dialog class="lightbox" id="lightbox" aria-label="Certificate">
@@ -654,8 +671,8 @@
   </section>
 
   <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
-  <script src="js/main.js?v=20261025n" defer></script>
-  <script type="module" src="js/scene.js?v=20261025n"></script>
-  <script type="module" src="js/chat.js?v=20261025n"></script>
+  <script src="js/main.js?v=20261025u" defer></script>
+  <script type="module" src="js/scene.js?v=20261025u"></script>
+  <script type="module" src="js/chat.js?v=20261025u"></script>
 </body>
 </html>

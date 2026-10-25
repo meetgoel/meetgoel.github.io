@@ -287,7 +287,8 @@ function initCerts() {
       apply(card.dataset.filter);
       select(card.dataset.filter);
       const target = document.getElementById("gallery");
-      lenis ? lenis.scrollTo(target, { offset: -90 }) : target.scrollIntoView({ behavior: "smooth" });
+      const y = target.getBoundingClientRect().top + window.scrollY - 90;
+      lenis ? lenis.scrollTo(y) : window.scrollTo({ top: y, behavior: "smooth" });
     });
   });
 
@@ -302,6 +303,96 @@ function initMarquee() {
   track.innerHTML += track.innerHTML.replace(/alt="[^"]*"/g, 'alt="" aria-hidden="true"');
 }
 
+/* ---------- Fun buttons: magnetic pull, ripples, dice, download feedback, confetti ---------- */
+function initFunButtons() {
+  document.querySelectorAll(".btn").forEach((btn) => {
+    btn.addEventListener("pointerdown", (e) => {
+      const r = btn.getBoundingClientRect(), size = Math.max(r.width, r.height) * 2.2;
+      const dot = document.createElement("span");
+      dot.className = "ripple";
+      Object.assign(dot.style, { width: `${size}px`, height: `${size}px`, left: `${e.clientX - r.left}px`, top: `${e.clientY - r.top}px` });
+      btn.appendChild(dot);
+      dot.addEventListener("animationend", () => dot.remove());
+    });
+  });
+  if (finePointer && !reduceMotion) {
+    document.querySelectorAll(".hero-cta .btn, .contact-actions .btn, .pill .btn").forEach((btn) => {
+      btn.classList.add("magnetic");
+      btn.addEventListener("pointermove", (e) => {
+        const r = btn.getBoundingClientRect();
+        const dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+        btn.style.transform = `translate(${dx * 0.28}px, ${dy * 0.4}px)`;
+      });
+      btn.addEventListener("pointerleave", () => { btn.style.transform = ""; });
+    });
+  }
+  document.querySelectorAll("a[download]").forEach((a) => {
+    a.addEventListener("click", () => {
+      const label = [...a.childNodes].find((n) => n.nodeType === 3 && n.textContent.trim());
+      if (!label || a.dataset.busy) return;
+      const old = label.textContent;
+      a.dataset.busy = "1";
+      label.textContent = "Downloading ✓";
+      setTimeout(() => { label.textContent = old; delete a.dataset.busy; }, 2200);
+    });
+  });
+  const dice = document.getElementById("dice");
+  dice?.addEventListener("click", () => {
+    const cards = [...document.querySelectorAll("#project-grid .card:not([hidden])")];
+    const pick = cards[Math.floor(Math.random() * cards.length)];
+    dice.classList.remove("rolling"); void dice.offsetWidth; dice.classList.add("rolling");
+    if (!pick) return;
+    const y = pick.getBoundingClientRect().top + window.scrollY - 140;
+    lenis ? lenis.scrollTo(y) : window.scrollTo({ top: y, behavior: "smooth" });
+    pick.classList.add("in");
+    setTimeout(() => { pick.classList.remove("surprise"); void pick.offsetWidth; pick.classList.add("surprise"); }, 900);
+  });
+}
+
+function confetti(x, y) {
+  if (reduceMotion) return;
+  const c = document.createElement("canvas");
+  c.className = "confetti";
+  c.width = innerWidth * devicePixelRatio; c.height = innerHeight * devicePixelRatio;
+  document.body.appendChild(c);
+  const g = c.getContext("2d");
+  g.scale(devicePixelRatio, devicePixelRatio);
+  const colors = ["#2F8CFF", "#7CC0FF", "#A66CFF", "#4ADE80", "#FBBF24", "#FF5C8A"];
+  const parts = Array.from({ length: 110 }, () => ({
+    x, y, vx: (Math.random() - 0.5) * 11, vy: -Math.random() * 11 - 3, r: Math.random() * Math.PI,
+    vr: (Math.random() - 0.5) * 0.3, w: 5 + Math.random() * 6, h: 3 + Math.random() * 4, c: colors[(Math.random() * colors.length) | 0],
+  }));
+  let frame = 0;
+  (function tick() {
+    g.clearRect(0, 0, innerWidth, innerHeight);
+    parts.forEach((p) => {
+      p.vy += 0.32; p.vx *= 0.985; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+      g.save(); g.translate(p.x, p.y); g.rotate(p.r); g.fillStyle = p.c; g.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); g.restore();
+    });
+    if (frame++ < 110) requestAnimationFrame(tick); else c.remove();
+  })();
+}
+
+/* ---------- Easter egg: type "mario" anywhere to unlock the secret level ---------- */
+function goSecret() {
+  const v = document.createElement("div");
+  v.className = "secret-veil";
+  v.innerHTML = "<p>🍄 Secret level unlocked!</p>";
+  document.body.appendChild(v);
+  setTimeout(() => { location.href = "mario.html"; }, 1100);
+}
+window.goSecret = goSecret;
+function initEasterEgg() {
+  let typed = "";
+  document.addEventListener("keydown", (e) => {
+    const el = e.target instanceof Element ? e.target : null;
+    if ((el && el.closest("input, textarea, select, [contenteditable]")) || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key.length !== 1) return;
+    typed = (typed + e.key.toLowerCase()).slice(-5);
+    if (typed === "mario") goSecret();
+  });
+}
+
 /* ---------- Copy email ---------- */
 function initCopy() {
   const btn = document.getElementById("copy-email");
@@ -309,7 +400,9 @@ function initCopy() {
   btn.addEventListener("click", async () => {
     try {
       await navigator.clipboard.writeText(btn.dataset.email);
-      label.textContent = "Email copied";
+      label.textContent = "Email copied 🎉";
+      const r = btn.getBoundingClientRect();
+      confetti(r.left + r.width / 2, r.top + r.height / 2);
     } catch {
       window.location.href = "mailto:" + btn.dataset.email;
     }
@@ -329,3 +422,5 @@ initProjects();
 initCerts();
 initMarquee();
 initCopy();
+initFunButtons();
+initEasterEgg();
